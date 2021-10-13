@@ -1,0 +1,10 @@
+.productsList {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.productsList > * {
+    margin-right: 10px;
+}

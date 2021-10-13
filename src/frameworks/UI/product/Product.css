@@ -1,0 +1,15 @@
+.productCard {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid lightseagreen;
+    margin-bottom: 5px;
+    max-width: 400px;
+    min-width: 200px;
+}
+
+.productCard > * {
+    margin-top: 5px;
+    font-size: 0.6em;
+}

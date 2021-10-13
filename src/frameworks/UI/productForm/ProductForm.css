@@ -1,0 +1,45 @@
+.productForm {
+    display: flex;
+    flex-direction: column;
+}
+
+.productForm > * {
+    margin-top: 10px;
+}
+
+.input {
+    padding: 5px;
+}
+
+.label {
+    font-size: 0.5em;
+    text-transform: uppercase;
+}
+
+.product {
+    display: flex;
+}
+
+.product > * {
+    margin-right: 10px;
+}
+
+.productName {
+    flex: 4;
+}
+
+.productName > * {
+    margin-right: 5px;
+}
+
+.productQty {
+    flex: 1;
+}
+
+.productQty > * {
+    margin-right: 5px;
+}
+
+.inputStock {
+    max-width: 30px;
+}
