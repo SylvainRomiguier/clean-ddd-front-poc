@@ -18,38 +18,59 @@ import {
 } from "./adapters/ProductDto";
 import { IsErrorProductResult } from "./adapters/IProductRepository";
 import { ProductsList } from "./frameworks/UI/products/ProductsList";
+import { createObserver, Listener } from "./observer/Observer";
 
-const persistUser = async (user: UserFormOutput): Promise<UserPresenterDto> => {
-    const response = await addUser(
-        user.userName,
-        user.password,
-        user.firstName,
-        user.lastName
-    );
-    if (!IsErrorUserResult(response)) return response.result;
-    throw new Error(response.reason);
-};
+type UserEvent = "CREATE_USER" | "UPDATE_USER" | "REMOVE_USER";
+type ProductEvent = "CREATE_PRODUCT" | "UPDATE_PRODUCT" | "REMOVE_PRODUCT";
 
-const persistProduct = async (
-    product: ProductFormOutput
-): Promise<ProductPresenterDto> => {
-    const response = await addProduct(product.name, product.qtyInStock);
-    if (!IsErrorProductResult(response)) return response.result;
-    throw new Error(response.reason);
-};
+const userObserver = createObserver<UserEvent>();
+const productObserver = createObserver<ProductEvent>();
+
+const saveUser =
+    (listener: Listener<UserEvent>) =>
+    async (user: UserFormOutput): Promise<UserPresenterDto> => {
+        const unsubscribe = userObserver.subscribe(listener);
+        const response = await addUser(
+            user.userName,
+            user.password,
+            user.firstName,
+            user.lastName
+        );
+        if (!IsErrorUserResult(response)) {
+            userObserver.publish("CREATE_USER");
+            unsubscribe();
+            return response.result;
+        }
+        unsubscribe();
+        throw new Error(response.reason);
+    };
+
+const saveProduct =
+    (listener: Listener<ProductEvent>) =>
+    async (product: ProductFormOutput): Promise<ProductPresenterDto> => {
+        const unsubscribe = productObserver.subscribe(listener);
+        const response = await addProduct(product.name, product.qtyInStock);
+        if (!IsErrorProductResult(response)) {
+            productObserver.publish("CREATE_PRODUCT");
+            unsubscribe();
+            return response.result;
+        }
+        unsubscribe();
+        throw new Error(response.reason);
+    };
 
 function App() {
     const [usersList, setUsersList] = useState<UserPresenterDto[]>([]);
     const [productsList, setProductsList] = useState<ProductPresenterDto[]>([]);
 
-    const getUsersList = async () => {
+    const updateUsersList = async (event: UserEvent) => {
         const usersListRead = await getAllUsers();
         setUsersList(
             usersListRead.map((user) => userPresenterDtoFromDomain(user))
         );
     };
 
-    const getProductsList = async () => {
+    const updateProductsList = async (event: ProductEvent) => {
         const productsListRead = await getAllProducts();
         setProductsList(
             productsListRead.map((product) =>
@@ -58,39 +79,11 @@ function App() {
         );
     };
 
-    const saveUser = async (
-        user: UserFormOutput
-    ): Promise<UserPresenterDto> => {
-        let response;
-        try {
-            response = await persistUser(user);
-            await getUsersList();
-            return response;
-        } catch (e: any) {
-            console.log(e);
-            throw new Error(e.message || "");
-        }
-    };
-
-    const saveProduct = async (
-        product: ProductFormOutput
-    ): Promise<ProductPresenterDto> => {
-        let response;
-        try {
-            response = await persistProduct(product);
-            await getProductsList();
-            return response;
-        } catch (e: any) {
-            console.log(e);
-            throw new Error(e.message || "");
-        }
-    };
-
     return (
         <div className="appContainer">
             <div className="userContainer">
                 <div style={{ width: "30%" }}>
-                    <UserForm onSubmit={saveUser} />
+                    <UserForm onSubmit={saveUser(updateUsersList)} />
                 </div>
                 <div className="usersList">
                     <UsersList usersList={usersList} />
@@ -98,7 +91,7 @@ function App() {
             </div>
             <div className="productContainer">
                 <div style={{ width: "30%" }}>
-                    <ProductForm onSubmit={saveProduct} />
+                    <ProductForm onSubmit={saveProduct(updateProductsList)} />
                 </div>
                 <div className="usersList">
                     <ProductsList productsList={productsList} />
