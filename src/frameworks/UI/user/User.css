@@ -7,6 +7,13 @@
     margin-bottom: 5px;
     max-width: 400px;
     min-width: 200px;
+    cursor: pointer;
+    height: 100px;
+}
+
+.userSelected {
+    background-color: lightcoral;
+    color: white;
 }
 
 .userCard > * {

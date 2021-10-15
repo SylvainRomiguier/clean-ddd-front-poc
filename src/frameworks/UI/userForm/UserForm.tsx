@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { UserPresenterDto } from "../../../adapters/UserDto";
 import "./UserForm.css";
 
@@ -10,7 +10,7 @@ export interface UserFormOutput {
     lastName?: string;
 }
 
-interface UserFormInput {
+export interface UserFormInput {
     id?: string;
     userName?: string;
     password?: string;
@@ -33,7 +33,6 @@ const userFormInputToUserFormOutput = (
 export const UserForm: React.FC<UserFormInput> = ({
     id,
     userName,
-    password,
     firstName,
     lastName,
     onSubmit,
@@ -41,10 +40,13 @@ export const UserForm: React.FC<UserFormInput> = ({
     const [userInput, setUserInput] = useState<UserFormInput>({
         id,
         userName,
-        password,
         firstName,
         lastName,
     } as UserFormInput);
+
+    useEffect(() => {
+        setUserInput({ id, userName, firstName, lastName } as UserFormInput);
+    }, [id, userName, firstName, lastName]);
 
     const [error, setError] = useState<string | null>(null);
 
@@ -68,6 +70,7 @@ export const UserForm: React.FC<UserFormInput> = ({
 
     return (
         <form onSubmit={submit} className="userForm">
+            {userInput.id && <label>ID : {userInput.id}</label>}
             <label htmlFor="username" className="label">
                 user name
             </label>
@@ -116,7 +119,9 @@ export const UserForm: React.FC<UserFormInput> = ({
                     onChange({ ...userInput, lastName: e.target.value })
                 }
             />
-            <button type="submit">Enregistrer</button>
+            <button type="submit">
+                {userInput.id ? "Modifier" : "Ajouter"}
+            </button>
             {error && <div>{error}</div>}
         </form>
     );

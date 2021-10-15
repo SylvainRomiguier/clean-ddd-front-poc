@@ -7,7 +7,13 @@ import {
 } from "./adapters/UserDto";
 import { UserForm, UserFormOutput } from "./frameworks/UI/userForm/UserForm";
 import { UsersList } from "./frameworks/UI/users/UsersList";
-import { addProduct, addUser, getAllProducts, getAllUsers } from "./ioc";
+import {
+    addProduct,
+    addUser,
+    updateUser,
+    getAllProducts,
+    getAllUsers,
+} from "./ioc";
 import {
     ProductForm,
     ProductFormOutput,
@@ -26,16 +32,36 @@ type ProductEvent = "CREATE_PRODUCT" | "UPDATE_PRODUCT" | "REMOVE_PRODUCT";
 const userObserver = createObserver<UserEvent>();
 const productObserver = createObserver<ProductEvent>();
 
-const saveUser =
-    (listener: Listener<UserEvent>) =>
+const handleUser =
+    (event: UserEvent, listener: Listener<UserEvent>) =>
     async (user: UserFormOutput): Promise<UserPresenterDto> => {
         const unsubscribe = userObserver.subscribe(listener);
-        const response = await addUser(
-            user.userName,
-            user.password,
-            user.firstName,
-            user.lastName
-        );
+        let response;
+        switch (event) {
+            case "CREATE_USER":
+                response = await addUser(
+                    user.userName,
+                    user.password,
+                    user.firstName,
+                    user.lastName
+                );
+                break;
+            case "UPDATE_USER":
+                if (!user.id)
+                    throw new Error(
+                        `Can not update a user without id : ${user.userName}`
+                    );
+                response = await updateUser(
+                    user.id,
+                    user.userName,
+                    user.password,
+                    user.firstName,
+                    user.lastName
+                );
+                break;
+            default:
+                throw new Error(`Unknown user event: ${event}`);
+        }
         if (!IsErrorUserResult(response)) {
             userObserver.publish("CREATE_USER");
             unsubscribe();
@@ -60,6 +86,10 @@ const saveProduct =
     };
 
 function App() {
+    const [selectedUser, setSelectedUser] = useState<
+        UserPresenterDto | undefined
+    >(undefined);
+
     const [usersList, setUsersList] = useState<UserPresenterDto[]>([]);
     const [productsList, setProductsList] = useState<ProductPresenterDto[]>([]);
 
@@ -83,10 +113,40 @@ function App() {
         <div className="appContainer">
             <div className="userContainer">
                 <div style={{ width: "30%" }}>
-                    <UserForm onSubmit={saveUser(updateUsersList)} />
+                    {selectedUser ? (
+                        <>
+                            <UserForm
+                                id={selectedUser.id}
+                                userName={selectedUser.userName}
+                                firstName={selectedUser.firstName}
+                                lastName={selectedUser.lastName}
+                                onSubmit={handleUser(
+                                    "UPDATE_USER",
+                                    updateUsersList
+                                )}
+                            />
+                            <button
+                                onClick={() => setSelectedUser(undefined)}
+                                style={{ width: "100%", marginTop: "10px" }}
+                            >
+                                Ajouter un utilisateur
+                            </button>
+                        </>
+                    ) : (
+                        <UserForm
+                            onSubmit={handleUser(
+                                "CREATE_USER",
+                                updateUsersList
+                            )}
+                        />
+                    )}
                 </div>
                 <div className="usersList">
-                    <UsersList usersList={usersList} />
+                    <UsersList
+                        usersList={usersList}
+                        selectUser={setSelectedUser}
+                        selectedUser={selectedUser}
+                    />
                 </div>
             </div>
             <div className="productContainer">

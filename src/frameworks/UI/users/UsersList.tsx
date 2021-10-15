@@ -4,13 +4,27 @@ import "./UsersList.css";
 
 export interface UsersListProps {
     usersList: UserPresenterDto[];
+    selectUser: (user: UserPresenterDto) => void;
+    selectedUser?: UserPresenterDto;
 }
 
-export const UsersList: React.FC<UsersListProps> = ({ usersList }) => {
+export const UsersList: React.FC<UsersListProps> = ({
+    usersList,
+    selectUser,
+    selectedUser,
+}) => {
     return (
         <div className="usersList">
             {usersList.map((user) => (
-                <UserCard key={user.id} user={user} />
+                <UserCard
+                    selected={
+                        selectedUser !== undefined &&
+                        selectedUser.id === user.id
+                    }
+                    key={user.id}
+                    user={user}
+                    onClick={() => selectUser(user)}
+                />
             ))}
         </div>
     );

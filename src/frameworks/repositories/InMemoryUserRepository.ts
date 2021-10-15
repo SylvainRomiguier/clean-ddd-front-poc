@@ -46,7 +46,16 @@ export const makeInMemoryUserRepository = (
         return new Promise<UserResult>((resolve) => resolve({ result: _user }));
     },
     updateUser: (user: UserControllerDto) => {
-        throw Error("Not implemented");
+        if (!user.id) throw new Error(`Repository : id is undefined !`);
+        users[user.id] = user;
+        const _user = makeUserPresenterDto(
+            user.id,
+            user.userName,
+            user.firstName,
+            user.lastName,
+            user.carts
+        );
+        return new Promise<UserResult>((resolve) => resolve({ result: _user }));
     },
     deleteUser: (user: UserControllerDto) => {
         throw Error("Not implemented");
