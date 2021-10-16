@@ -1,5 +1,6 @@
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import { ProductPresenterDto } from "../../../adapters/ProductDto";
+import { Button } from "../button/Button";
 import "./ProductForm.css";
 
 export interface ProductFormOutput {
@@ -42,8 +43,7 @@ export const ProductForm: React.FC<ProductFormInput> = ({
         setProductInput(productFormInput);
     };
 
-    const submit = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const submit = async () => {
         try {
             setError(null);
             await onSubmit(productFormInputToProductFormOutput(productInput));
@@ -57,8 +57,9 @@ export const ProductForm: React.FC<ProductFormInput> = ({
     };
 
     return (
-        <form onSubmit={submit} className="userForm">
+        <div className="userForm">
             <div className="product">
+                {productInput.id && <label>ID : {productInput.id}</label>}
                 <div className="productName">
                     <label htmlFor="name" className="label">
                         product name
@@ -91,8 +92,10 @@ export const ProductForm: React.FC<ProductFormInput> = ({
                     />
                 </div>
             </div>
-            <button type="submit">Enregistrer</button>
+            <Button onClick={submit}>
+                {productInput.id ? "Modifier" : "Ajouter"}
+            </Button>
             {error && <div>{error}</div>}
-        </form>
+        </div>
     );
 };

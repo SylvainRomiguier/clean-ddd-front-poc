@@ -1,5 +1,6 @@
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { UserPresenterDto } from "../../../adapters/UserDto";
+import { Button } from "../button/Button";
 import "./UserForm.css";
 
 export interface UserFormOutput {
@@ -54,8 +55,7 @@ export const UserForm: React.FC<UserFormInput> = ({
         setUserInput(userFormInput);
     };
 
-    const submit = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const submit = async () => {
         try {
             setError(null);
             await onSubmit(userFormInputToUserFormOutput(userInput));
@@ -69,7 +69,7 @@ export const UserForm: React.FC<UserFormInput> = ({
     };
 
     return (
-        <form onSubmit={submit} className="userForm">
+        <div className="userForm">
             {userInput.id && <label>ID : {userInput.id}</label>}
             <label htmlFor="username" className="label">
                 user name
@@ -119,10 +119,11 @@ export const UserForm: React.FC<UserFormInput> = ({
                     onChange({ ...userInput, lastName: e.target.value })
                 }
             />
-            <button type="submit">
+            <Button onClick={submit}>
+        
                 {userInput.id ? "Modifier" : "Ajouter"}
-            </button>
+          </Button>
             {error && <div>{error}</div>}
-        </form>
+        </div>
     );
 };

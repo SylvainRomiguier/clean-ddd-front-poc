@@ -46,7 +46,7 @@ export const makeInMemoryUserRepository = (
         return new Promise<UserResult>((resolve) => resolve({ result: _user }));
     },
     updateUser: (user: UserControllerDto) => {
-        if (!user.id) throw new Error(`Repository : id is undefined !`);
+        if (!user.id) throw new Error(`Repository : user id is undefined !`);
         users[user.id] = user;
         const _user = makeUserPresenterDto(
             user.id,

@@ -6,13 +6,13 @@ import {
     userPresenterDtoFromDomain,
 } from "./adapters/UserDto";
 import { UserForm, UserFormOutput } from "./frameworks/UI/userForm/UserForm";
-import { UsersList } from "./frameworks/UI/users/UsersList";
 import {
     addProduct,
     addUser,
     updateUser,
     getAllProducts,
     getAllUsers,
+    updateProduct,
 } from "./ioc";
 import {
     ProductForm,
@@ -23,8 +23,10 @@ import {
     productPresenterDtoFromDomain,
 } from "./adapters/ProductDto";
 import { IsErrorProductResult } from "./adapters/IProductRepository";
-import { ProductsList } from "./frameworks/UI/products/ProductsList";
 import { createObserver, Listener } from "./observer/Observer";
+import { ListOfCards } from "./frameworks/UI/listOfCards/ListOfCards";
+import { Card } from "./frameworks/UI/card/Card";
+import { Button } from "./frameworks/UI/button/Button";
 
 type UserEvent = "CREATE_USER" | "UPDATE_USER" | "REMOVE_USER";
 type ProductEvent = "CREATE_PRODUCT" | "UPDATE_PRODUCT" | "REMOVE_PRODUCT";
@@ -63,7 +65,7 @@ const handleUser =
                 throw new Error(`Unknown user event: ${event}`);
         }
         if (!IsErrorUserResult(response)) {
-            userObserver.publish("CREATE_USER");
+            userObserver.publish(event);
             unsubscribe();
             return response.result;
         }
@@ -71,13 +73,31 @@ const handleUser =
         throw new Error(response.reason);
     };
 
-const saveProduct =
-    (listener: Listener<ProductEvent>) =>
+const handleProduct =
+    (event: ProductEvent, listener: Listener<ProductEvent>) =>
     async (product: ProductFormOutput): Promise<ProductPresenterDto> => {
         const unsubscribe = productObserver.subscribe(listener);
-        const response = await addProduct(product.name, product.qtyInStock);
+        let response;
+        switch (event) {
+            case "CREATE_PRODUCT":
+                response = await addProduct(product.name, product.qtyInStock);
+                break;
+            case "UPDATE_PRODUCT":
+                if (!product.id)
+                throw new Error(
+                    `Can not update a product without id : ${product.name}`
+                );
+                response = await updateProduct(
+                    product.id,
+                    product.name,
+                    product.qtyInStock
+                );
+                break;
+            default:
+                throw new Error(`Unknown product event: ${event}`);
+        }
         if (!IsErrorProductResult(response)) {
-            productObserver.publish("CREATE_PRODUCT");
+            productObserver.publish(event);
             unsubscribe();
             return response.result;
         }
@@ -86,12 +106,14 @@ const saveProduct =
     };
 
 function App() {
+    const [usersList, setUsersList] = useState<UserPresenterDto[]>([]);
     const [selectedUser, setSelectedUser] = useState<
         UserPresenterDto | undefined
     >(undefined);
-
-    const [usersList, setUsersList] = useState<UserPresenterDto[]>([]);
     const [productsList, setProductsList] = useState<ProductPresenterDto[]>([]);
+    const [selectedProduct, setSelectedProduct] = useState<
+        ProductPresenterDto | undefined
+    >(undefined);
 
     const updateUsersList = async (event: UserEvent) => {
         const usersListRead = await getAllUsers();
@@ -125,12 +147,9 @@ function App() {
                                     updateUsersList
                                 )}
                             />
-                            <button
-                                onClick={() => setSelectedUser(undefined)}
-                                style={{ width: "100%", marginTop: "10px" }}
-                            >
+                            <Button onClick={() => setSelectedUser(undefined)}>
                                 Ajouter un utilisateur
-                            </button>
+                            </Button>
                         </>
                     ) : (
                         <UserForm
@@ -141,20 +160,68 @@ function App() {
                         />
                     )}
                 </div>
-                <div className="usersList">
-                    <UsersList
-                        usersList={usersList}
-                        selectUser={setSelectedUser}
-                        selectedUser={selectedUser}
-                    />
+                <div className="containerList">
+                    <ListOfCards>
+                        {usersList.map((user) => (
+                            <Card
+                                onClick={() => setSelectedUser(user)}
+                                selected={
+                                    selectedUser
+                                        ? selectedUser.id === user.id
+                                        : false
+                                }
+                            >
+                                <div>{user.id}</div>
+                                <div>{user.userName}</div>
+                                <div>{user.firstName && user.firstName}</div>
+                                <div>{user.lastName && user.lastName}</div>
+                            </Card>
+                        ))}
+                    </ListOfCards>
                 </div>
             </div>
             <div className="productContainer">
                 <div style={{ width: "30%" }}>
-                    <ProductForm onSubmit={saveProduct(updateProductsList)} />
+                    {selectedProduct ? (
+                        <>
+                            <ProductForm
+                                onSubmit={handleProduct(
+                                    "UPDATE_PRODUCT",
+                                    updateProductsList
+                                )}
+                            />
+                            <Button
+                                onClick={() => setSelectedProduct(undefined)}
+                            >
+                                Ajouter un produit
+                            </Button>
+                        </>
+                    ) : (
+                        <ProductForm
+                            onSubmit={handleProduct(
+                                "CREATE_PRODUCT",
+                                updateProductsList
+                            )}
+                        />
+                    )}
                 </div>
-                <div className="usersList">
-                    <ProductsList productsList={productsList} />
+                <div className="containerList">
+                    <ListOfCards>
+                        {productsList.map((product) => (
+                            <Card
+                                onClick={() => setSelectedProduct(product)}
+                                selected={
+                                    selectedProduct
+                                        ? selectedProduct.id === product.id
+                                        : false
+                                }
+                            >
+                                <div>{product.id}</div>
+                                <div>{product.name}</div>
+                                <div>stock : {product.qtyInStock}</div>
+                            </Card>
+                        ))}
+                    </ListOfCards>
                 </div>
             </div>
         </div>

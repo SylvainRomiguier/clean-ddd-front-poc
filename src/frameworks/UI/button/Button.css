@@ -1,0 +1,14 @@
+.button {
+    display: flex;
+    justify-content: center;
+    background-color: coral;
+    color: white;
+    border-color: 1px solid rgb(75, 32, 32);
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    text-transform: uppercase;
+    font-weight: bold;
+}

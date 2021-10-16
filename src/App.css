@@ -20,7 +20,7 @@
     margin-right: 10px;
 }
 
-.usersList {
+.containerList {
     width: 70%;
     height: 50vh;
     overflow-y: scroll;
@@ -35,3 +35,4 @@
     margin-left: 10px;
     margin-right: 10px;
 }
+

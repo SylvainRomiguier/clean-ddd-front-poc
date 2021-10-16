@@ -7,6 +7,7 @@ import { makeInMemoryProductRepository } from "./frameworks/repositories/InMemor
 import { makeAddProduct } from "./application/product/addProduct";
 import { makeGetAllProducts } from "./application/product/getAllProducts";
 import { makeUpdateUser } from "./application/user/updateUser";
+import { makeUpdateProduct } from "./application/product/updateProduct";
 
 const inMemoryUserRepository = makeInMemoryUserRepository(uniqueIdGenerator);
 
@@ -19,4 +20,5 @@ const inMemoryProductRepository =
     makeInMemoryProductRepository(uniqueIdGenerator);
 
 export const addProduct = makeAddProduct(inMemoryProductRepository);
+export const updateProduct = makeUpdateProduct(inMemoryProductRepository);
 export const getAllProducts = makeGetAllProducts(inMemoryProductRepository);

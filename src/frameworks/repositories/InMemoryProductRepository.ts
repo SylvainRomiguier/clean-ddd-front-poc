@@ -44,7 +44,14 @@ export const makeInMemoryProductRepository = (
         );
     },
     updateProduct: (product: ProductControllerDto) => {
-        throw Error("Not implemented");
+        if (!product.id) throw new Error(`Repository : product id is undefined !`);
+        products[product.id] = product;
+        const _product = makeProductPresenterDto(
+            product.id,
+            product.name,
+            product.qtyInStock
+        );
+        return new Promise<ProductResult>((resolve) => resolve({ result: _product }));
     },
     deleteProduct: (product: ProductControllerDto) => {
         throw Error("Not implemented");
