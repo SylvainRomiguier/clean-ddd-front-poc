@@ -1,0 +1,14 @@
+.textField {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.input {
+    padding: 5px;
+}
+
+.label {
+    font-size: 0.5em;
+    text-transform: uppercase;
+}

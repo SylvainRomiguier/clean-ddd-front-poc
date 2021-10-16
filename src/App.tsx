@@ -5,7 +5,10 @@ import {
     UserPresenterDto,
     userPresenterDtoFromDomain,
 } from "./adapters/UserDto";
-import { UserForm, UserFormOutput } from "./frameworks/UI/userForm/UserForm";
+import {
+    UserForm,
+    UserFormOutput,
+} from "./frameworks/UI/user/userForm/UserForm";
 import {
     addProduct,
     addUser,
@@ -17,7 +20,7 @@ import {
 import {
     ProductForm,
     ProductFormOutput,
-} from "./frameworks/UI/productForm/ProductForm";
+} from "./frameworks/UI/product/productForm/ProductForm";
 import {
     ProductPresenterDto,
     productPresenterDtoFromDomain,
@@ -27,6 +30,7 @@ import { createObserver, Listener } from "./observer/Observer";
 import { ListOfCards } from "./frameworks/UI/listOfCards/ListOfCards";
 import { Card } from "./frameworks/UI/card/Card";
 import { Button } from "./frameworks/UI/button/Button";
+import { UserListOfCards } from "./frameworks/UI/user/userListOfCards/UserListOfCards";
 
 type UserEvent = "CREATE_USER" | "UPDATE_USER" | "REMOVE_USER";
 type ProductEvent = "CREATE_PRODUCT" | "UPDATE_PRODUCT" | "REMOVE_PRODUCT";
@@ -84,9 +88,9 @@ const handleProduct =
                 break;
             case "UPDATE_PRODUCT":
                 if (!product.id)
-                throw new Error(
-                    `Can not update a product without id : ${product.name}`
-                );
+                    throw new Error(
+                        `Can not update a product without id : ${product.name}`
+                    );
                 response = await updateProduct(
                     product.id,
                     product.name,
@@ -147,9 +151,13 @@ function App() {
                                     updateUsersList
                                 )}
                             />
-                            <Button onClick={() => setSelectedUser(undefined)}>
-                                Ajouter un utilisateur
-                            </Button>
+                            <div style={{ marginTop: "10px" }}>
+                                <Button
+                                    onClick={() => setSelectedUser(undefined)}
+                                >
+                                    Ajouter un utilisateur
+                                </Button>
+                            </div>
                         </>
                     ) : (
                         <UserForm
@@ -161,23 +169,11 @@ function App() {
                     )}
                 </div>
                 <div className="containerList">
-                    <ListOfCards>
-                        {usersList.map((user) => (
-                            <Card
-                                onClick={() => setSelectedUser(user)}
-                                selected={
-                                    selectedUser
-                                        ? selectedUser.id === user.id
-                                        : false
-                                }
-                            >
-                                <div>{user.id}</div>
-                                <div>{user.userName}</div>
-                                <div>{user.firstName && user.firstName}</div>
-                                <div>{user.lastName && user.lastName}</div>
-                            </Card>
-                        ))}
-                    </ListOfCards>
+                    <UserListOfCards
+                        selectUser={setSelectedUser}
+                        selectedUser={selectedUser}
+                        usersList={usersList}
+                    />
                 </div>
             </div>
             <div className="productContainer">
@@ -185,16 +181,23 @@ function App() {
                     {selectedProduct ? (
                         <>
                             <ProductForm
+                                id={selectedProduct.id}
+                                name={selectedProduct.name}
+                                qtyInStock={selectedProduct.qtyInStock}
                                 onSubmit={handleProduct(
                                     "UPDATE_PRODUCT",
                                     updateProductsList
                                 )}
                             />
-                            <Button
-                                onClick={() => setSelectedProduct(undefined)}
-                            >
-                                Ajouter un produit
-                            </Button>
+                            <div style={{ marginTop: "10px" }}>
+                                <Button
+                                    onClick={() =>
+                                        setSelectedProduct(undefined)
+                                    }
+                                >
+                                    Ajouter un produit
+                                </Button>
+                            </div>
                         </>
                     ) : (
                         <ProductForm
