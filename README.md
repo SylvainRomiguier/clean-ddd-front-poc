@@ -1,6 +1,37 @@
-# Getting Started with Create React App
+# Getting Started with Clean DDD front POC
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project demonstrates the DDD and Clean Architecture concepts used for Front
+
+## Clean Architecture and Domain Driven Design
+
+### Domain
+In the domain directory you will find the domain entities :
+- Product : a simple Product entity
+- User : the User entity contains carts, carts contains orders, orders are linked to a Product entity.
+
+There is no domain entity for carts and orders as they can not exist without a User (DDD).
+Domain entities do not depend on anything (DDD and Clean Architecture).
+
+### Application
+In the application (DDD denomitation of UseCases in Clean Architecture) you will find the use cases for mutating the domain entities.
+They only depends on domain entities.
+The use cases are factories with injected dependencies based on interfaces (here IUserRepository and IProductRepository).
+These repository interfaces could be implemented with any infrastructure repository such as MongoDB, PostGreSQL, etc... here, for demo purpose, I choose in memory repositories.
+It helps to not depend on any outside framework, tools, etc. and it is easier to test the domain business logic.
+Furthermore the change of any new framework, tool, library, outside technology SHOULD NOT change the domain business logic implementation !
+
+### Adapters
+The various objects DTO (Data Transfer Object) used to convert outside object to/from domain.
+
+### ioc.ts
+IOC (Inversion Of Control) is the only place where ALL the dependencies injections are done. It is very simple to change the implementation used for each interface.
+
+### Frameworks (sometimes called Infrastructure)
+In the framework directory you will find the repositories implementations and the UI implementation (here in ReactJS).
+
+### Observer
+I often use the observer pattern to trigger events in order for listeners to react.
+For example, here, when a product/user is created, updated, etc. it triggers an event to request the new list in order to update the displayed information.
 
 ## Available Scripts
 
@@ -13,34 +44,3 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
-
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
