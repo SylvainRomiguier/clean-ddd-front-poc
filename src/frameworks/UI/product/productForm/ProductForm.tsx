@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { ProductPresenterDto } from "../../../../adapters/ProductDto";
-import { Button } from "../../button/Button";
-import { NumberField } from "../../numberField/NumberField";
-import { TextField } from "../../textField/TextField";
+import { Button } from "../../components/button/Button";
+import { NumberField } from "../../components/numberField/NumberField";
+import { TextField } from "../../components/textField/TextField";
 import "./ProductForm.css";
 
 export interface ProductFormOutput {

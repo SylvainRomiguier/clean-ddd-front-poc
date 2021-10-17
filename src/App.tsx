@@ -1,6 +1,5 @@
 import { useState } from "react";
 import "./App.css";
-import { IsErrorUserResult } from "./adapters/IUserRepository";
 import {
     UserPresenterDto,
     userPresenterDtoFromDomain,
@@ -9,105 +8,17 @@ import {
     UserForm,
     UserFormOutput,
 } from "./frameworks/UI/user/userForm/UserForm";
-import {
-    addProduct,
-    addUser,
-    updateUser,
-    getAllProducts,
-    getAllUsers,
-    updateProduct,
-} from "./ioc";
-import {
-    ProductForm,
-    ProductFormOutput,
-} from "./frameworks/UI/product/productForm/ProductForm";
+
+import { ProductForm, ProductFormOutput } from "./frameworks/UI/product/productForm/ProductForm";
 import {
     ProductPresenterDto,
     productPresenterDtoFromDomain,
 } from "./adapters/ProductDto";
-import { IsErrorProductResult } from "./adapters/IProductRepository";
-import { createObserver, Listener } from "./observer/Observer";
-import { ListOfCards } from "./frameworks/UI/listOfCards/ListOfCards";
-import { Card } from "./frameworks/UI/card/Card";
-import { Button } from "./frameworks/UI/button/Button";
 import { UserListOfCards } from "./frameworks/UI/user/userListOfCards/UserListOfCards";
-
-type UserEvent = "CREATE_USER" | "UPDATE_USER" | "REMOVE_USER";
-type ProductEvent = "CREATE_PRODUCT" | "UPDATE_PRODUCT" | "REMOVE_PRODUCT";
-
-const userObserver = createObserver<UserEvent>();
-const productObserver = createObserver<ProductEvent>();
-
-const handleUser =
-    (event: UserEvent, listener: Listener<UserEvent>) =>
-    async (user: UserFormOutput): Promise<UserPresenterDto> => {
-        const unsubscribe = userObserver.subscribe(listener);
-        let response;
-        switch (event) {
-            case "CREATE_USER":
-                response = await addUser(
-                    user.userName,
-                    user.password,
-                    user.firstName,
-                    user.lastName
-                );
-                break;
-            case "UPDATE_USER":
-                if (!user.id)
-                    throw new Error(
-                        `Can not update a user without id : ${user.userName}`
-                    );
-                response = await updateUser(
-                    user.id,
-                    user.userName,
-                    user.password,
-                    user.firstName,
-                    user.lastName
-                );
-                break;
-            default:
-                throw new Error(`Unknown user event: ${event}`);
-        }
-        if (!IsErrorUserResult(response)) {
-            userObserver.publish(event);
-            unsubscribe();
-            return response.result;
-        }
-        unsubscribe();
-        throw new Error(response.reason);
-    };
-
-const handleProduct =
-    (event: ProductEvent, listener: Listener<ProductEvent>) =>
-    async (product: ProductFormOutput): Promise<ProductPresenterDto> => {
-        const unsubscribe = productObserver.subscribe(listener);
-        let response;
-        switch (event) {
-            case "CREATE_PRODUCT":
-                response = await addProduct(product.name, product.qtyInStock);
-                break;
-            case "UPDATE_PRODUCT":
-                if (!product.id)
-                    throw new Error(
-                        `Can not update a product without id : ${product.name}`
-                    );
-                response = await updateProduct(
-                    product.id,
-                    product.name,
-                    product.qtyInStock
-                );
-                break;
-            default:
-                throw new Error(`Unknown product event: ${event}`);
-        }
-        if (!IsErrorProductResult(response)) {
-            productObserver.publish(event);
-            unsubscribe();
-            return response.result;
-        }
-        unsubscribe();
-        throw new Error(response.reason);
-    };
+import { ProductListOfCards } from "./frameworks/UI/product/productListOfCards/ProductListOfCards";
+import { services } from "./services/ioc";
+import { ProductEvent } from "./services/product/productService";
+import { UserEvent } from "./services/user/userService";
 
 function App() {
     const [usersList, setUsersList] = useState<UserPresenterDto[]>([]);
@@ -120,20 +31,40 @@ function App() {
     >(undefined);
 
     const updateUsersList = async (event: UserEvent) => {
-        const usersListRead = await getAllUsers();
+        const usersListRead = await services.userService.getAllUsers();
         setUsersList(
             usersListRead.map((user) => userPresenterDtoFromDomain(user))
         );
     };
 
     const updateProductsList = async (event: ProductEvent) => {
-        const productsListRead = await getAllProducts();
+        const productsListRead = await services.productService.getAllProducts();
         setProductsList(
             productsListRead.map((product) =>
                 productPresenterDtoFromDomain(product)
             )
         );
     };
+
+    const onUserUpdate = async (user: UserFormOutput) => {
+        const _user =
+            await services.userService.handleUser(
+                "UPDATE_USER",
+                updateUsersList
+            )(user);
+        if (_user.id) setSelectedUser(undefined);
+        return _user;
+    }
+
+    const onProductUpdate = async (product: ProductFormOutput) => {
+        const _product =
+            await services.productService.handleProduct(
+                "UPDATE_PRODUCT",
+                updateProductsList
+            )(product);
+        if (_product.id) setSelectedProduct(undefined);
+        return _product;
+    }
 
     return (
         <div className="appContainer">
@@ -146,22 +77,12 @@ function App() {
                                 userName={selectedUser.userName}
                                 firstName={selectedUser.firstName}
                                 lastName={selectedUser.lastName}
-                                onSubmit={handleUser(
-                                    "UPDATE_USER",
-                                    updateUsersList
-                                )}
+                                onSubmit={onUserUpdate}
                             />
-                            <div style={{ marginTop: "10px" }}>
-                                <Button
-                                    onClick={() => setSelectedUser(undefined)}
-                                >
-                                    Ajouter un utilisateur
-                                </Button>
-                            </div>
                         </>
                     ) : (
                         <UserForm
-                            onSubmit={handleUser(
+                            onSubmit={services.userService.handleUser(
                                 "CREATE_USER",
                                 updateUsersList
                             )}
@@ -184,24 +105,12 @@ function App() {
                                 id={selectedProduct.id}
                                 name={selectedProduct.name}
                                 qtyInStock={selectedProduct.qtyInStock}
-                                onSubmit={handleProduct(
-                                    "UPDATE_PRODUCT",
-                                    updateProductsList
-                                )}
+                                onSubmit={onProductUpdate}
                             />
-                            <div style={{ marginTop: "10px" }}>
-                                <Button
-                                    onClick={() =>
-                                        setSelectedProduct(undefined)
-                                    }
-                                >
-                                    Ajouter un produit
-                                </Button>
-                            </div>
                         </>
                     ) : (
                         <ProductForm
-                            onSubmit={handleProduct(
+                            onSubmit={services.productService.handleProduct(
                                 "CREATE_PRODUCT",
                                 updateProductsList
                             )}
@@ -209,22 +118,11 @@ function App() {
                     )}
                 </div>
                 <div className="containerList">
-                    <ListOfCards>
-                        {productsList.map((product) => (
-                            <Card
-                                onClick={() => setSelectedProduct(product)}
-                                selected={
-                                    selectedProduct
-                                        ? selectedProduct.id === product.id
-                                        : false
-                                }
-                            >
-                                <div>{product.id}</div>
-                                <div>{product.name}</div>
-                                <div>stock : {product.qtyInStock}</div>
-                            </Card>
-                        ))}
-                    </ListOfCards>
+                    <ProductListOfCards
+                        selectProduct={setSelectedProduct}
+                        selectedProduct={selectedProduct}
+                        productsList={productsList}
+                    />
                 </div>
             </div>
         </div>

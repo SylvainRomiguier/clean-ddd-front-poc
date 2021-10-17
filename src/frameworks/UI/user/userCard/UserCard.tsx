@@ -1,5 +1,5 @@
 import { UserPresenterDto } from "../../../../adapters/UserDto";
-import { Card } from "../../card/Card";
+import { Card } from "../../components/card/Card";
 
 export interface UserCardProps {
     onClick: () => void;

@@ -1,5 +1,5 @@
 import { UserPresenterDto } from "../../../../adapters/UserDto";
-import { ListOfCards } from "../../listOfCards/ListOfCards";
+import { ListOfCards } from "../../components/listOfCards/ListOfCards";
 import { UserCard } from "../userCard/UserCard";
 
 export interface UserListOfCardsProps {
@@ -16,8 +16,11 @@ export const UserListOfCards: React.FC<UserListOfCardsProps> = ({
     <ListOfCards>
         {usersList.map((user) => (
             <UserCard
+                key={user.id}
                 onClick={() => selectUser(user)}
-                selected={selectedUser && selectedUser.id === user.id ? true : false}
+                selected={
+                    selectedUser && selectedUser.id === user.id ? true : false
+                }
                 user={user}
             />
         ))}
