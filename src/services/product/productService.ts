@@ -2,10 +2,9 @@ import {
     IsErrorProductResult,
     ProductResult,
 } from "../../adapters/IProductRepository";
-import { ProductPresenterDto } from "../../adapters/ProductDto";
+import { ProductControllerDto, ProductPresenterDto } from "../../adapters/ProductDto";
 import { Product } from "../../domain/product";
 import { Name, Quantity, UniqueId } from "../../domain/types";
-import { ProductFormOutput } from "../../frameworks/UI/product/productForm/ProductForm";
 import { createObserver, Listener } from "../observer/Observer";
 
 export interface ProductUseCases {
@@ -22,7 +21,7 @@ export interface ProductService {
     handleProduct: (
         event: ProductEvent,
         listener: Listener<ProductEvent>
-    ) => (product: ProductFormOutput) => Promise<ProductPresenterDto>;
+    ) => (product: ProductControllerDto) => Promise<ProductPresenterDto>;
     getAllProducts: () => Promise<Product[]>;
 }
 
@@ -33,7 +32,7 @@ const productObserver = createObserver<ProductEvent>();
 export const makeProductService = (productUseCases: ProductUseCases):ProductService => ({
     handleProduct:
         (event: ProductEvent, listener: Listener<ProductEvent>) =>
-        async (product: ProductFormOutput): Promise<ProductPresenterDto> => {
+        async (product: ProductControllerDto): Promise<ProductPresenterDto> => {
             const unsubscribe = productObserver.subscribe(listener);
             let response;
             switch (event) {

@@ -1,6 +1,6 @@
-import { ProductPresenterDto } from "../../../../adapters/ProductDto";
-import { ListOfCards } from "../../components/listOfCards/ListOfCards";
-import { ProductCard } from "../productCard/ProductCard";
+import { ProductPresenterDto } from "../../../../../adapters/ProductDto";
+import { ListOfCards } from "../../../components/atoms/listOfCards/ListOfCards";
+import { ProductCard } from "../../molecules/productCard/ProductCard";
 
 export interface ProductListOfCardsProps {
     productsList: ProductPresenterDto[];
@@ -19,9 +19,7 @@ export const ProductListOfCards: React.FC<ProductListOfCardsProps> = ({
                 key={product.id}
                 onClick={() => selectProduct(product)}
                 selected={
-                    selectedProduct && selectedProduct.id === product.id
-                        ? true
-                        : false
+                    selectedProduct! && selectedProduct.id === product.id
                 }
                 product={product}
             />

@@ -45,3 +45,7 @@ export const productPresenterDtoFromDomain = (
 export const productPresenterDtoToDomain = (
     product: ProductPresenterDto
 ): Product => makeProduct(product.name, product.qtyInStock, product.id);
+
+export const productControllerDtoToDomain = (
+    product: ProductControllerDto
+): Product => makeProduct(product.name, product.qtyInStock, product.id);

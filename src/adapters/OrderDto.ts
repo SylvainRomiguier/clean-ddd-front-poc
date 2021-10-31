@@ -3,6 +3,7 @@ import { Product } from "../domain/product";
 import { Quantity, UniqueId } from "../domain/types";
 import {
     productControllerDtoFromDomain,
+    productControllerDtoToDomain,
     productPresenterDtoFromDomain,
     productPresenterDtoToDomain,
 } from "./ProductDto";
@@ -37,3 +38,6 @@ export const orderPresenterDtoFromDomain = (order: Order): OrderPresenterDto =>
 
 export const orderPresenterDtoToDomain = (order: OrderPresenterDto): Order =>
     makeOrder(productPresenterDtoToDomain(order.product), order.qty, order.id);
+
+    export const orderControllerDtoToDomain = (order: OrderControllerDto): Order =>
+    makeOrder(productControllerDtoToDomain(order.product), order.qty, order.id);

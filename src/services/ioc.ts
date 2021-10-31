@@ -11,6 +11,7 @@ import { makeUpdateProduct } from "../application/product/updateProduct";
 import { makeProductService } from "./product/productService";
 import { makeUserService } from "./user/userService";
 import { makeServices } from "./services";
+import { makeAddCart } from "../application/user/addCart";
 
 const inMemoryUserRepository = makeInMemoryUserRepository(uniqueIdGenerator);
 
@@ -18,8 +19,9 @@ const inMemoryUserRepository = makeInMemoryUserRepository(uniqueIdGenerator);
  const updateUser = makeUpdateUser(inMemoryUserRepository);
  // const getUserById = makeGetUserById(inMemoryUserRepository);
  const getAllUsers = makeGetAllUsers(inMemoryUserRepository);
+ const addCart = makeAddCart(uniqueIdGenerator, inMemoryUserRepository);
 
-const userService = makeUserService({addUser, updateUser, getAllUsers});
+const userService = makeUserService({addUser, updateUser, getAllUsers, addCart});
 
 const inMemoryProductRepository =
     makeInMemoryProductRepository(uniqueIdGenerator);

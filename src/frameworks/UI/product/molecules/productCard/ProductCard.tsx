@@ -1,5 +1,5 @@
-import { ProductPresenterDto } from "../../../../adapters/ProductDto";
-import { Card } from "../../components/card/Card";
+import { ProductPresenterDto } from "../../../../../adapters/ProductDto";
+import { Card } from "../../../components/atoms/card/Card";
 
 export interface ProductCardProps {
     onClick: () => void;

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { UserPresenterDto } from "../../../../adapters/UserDto";
-import { Button } from "../../components/button/Button";
-import { TextField } from "../../components/textField/TextField";
+import { UserPresenterDto } from "../../../../../adapters/UserDto";
+import { Button } from "../../../components/atoms/button/Button";
+import { TextField } from "../../../components/molecules/textField/TextField";
 import "./UserForm.css";
 
 export interface UserFormOutput {

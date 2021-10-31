@@ -3,6 +3,7 @@ import { Order } from "../domain/user";
 import { UniqueId } from "../domain/types";
 import {
     orderControllerDtoFromDomain,
+    orderControllerDtoToDomain,
     orderPresenterDtoFromDomain,
     orderPresenterDtoToDomain,
 } from "./OrderDto";
@@ -40,4 +41,11 @@ export const cartPresenterDtoToDomain = (cart: CartPresenterDto): Cart =>
         cart.id,
         cart.creationDate,
         cart.orders?.map((order) => orderPresenterDtoToDomain(order))
+    );
+
+    export const cartControllerDtoToDomain = (cart: CartControllerDto): Cart =>
+    makeCart(
+        cart.id,
+        cart.creationDate,
+        cart.orders?.map((order) => orderControllerDtoToDomain(order))
     );

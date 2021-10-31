@@ -1,7 +1,7 @@
+import { cartControllerDtoToDomain } from "../../adapters/CartDto";
 import { UserResult, IsErrorUserResult } from "../../adapters/IUserRepository";
-import { UserPresenterDto } from "../../adapters/UserDto";
+import { UserControllerDto, UserPresenterDto } from "../../adapters/UserDto";
 import { Cart, User } from "../../domain/user";
-import { UserFormOutput } from "../../frameworks/UI/user/userForm/UserForm";
 import { Listener, createObserver } from "../observer/Observer";
 
 export interface UserUseCases {
@@ -20,14 +20,16 @@ export interface UserUseCases {
         carts?: Cart[] | undefined
     ) => Promise<UserResult>;
     getAllUsers: () => Promise<User[]>;
+    addCart: (user:User) => Promise<UserResult>;
 }
 
 export interface UserService {
     handleUser: (
         event: UserEvent,
         listener: Listener<UserEvent>
-    ) => (user: UserFormOutput) => Promise<UserPresenterDto>;
+    ) => (user: UserControllerDto) => Promise<UserPresenterDto>;
     getAllUsers: () => Promise<User[]>;
+    addCart:(listener: Listener<UserEvent>) => (user:User) => Promise<UserPresenterDto>;
 }
 
 export type UserEvent = "CREATE_USER" | "UPDATE_USER" | "REMOVE_USER";
@@ -36,14 +38,14 @@ const userObserver = createObserver<UserEvent>();
 export const makeUserService = (userUseCases: UserUseCases):UserService => ({
     handleUser:
         (event: UserEvent, listener: Listener<UserEvent>) =>
-        async (user: UserFormOutput): Promise<UserPresenterDto> => {
+        async (user: UserControllerDto): Promise<UserPresenterDto> => {
             const unsubscribe = userObserver.subscribe(listener);
             let response;
             switch (event) {
                 case "CREATE_USER":
                     response = await userUseCases.addUser(
                         user.userName,
-                        user.password,
+                        user.password || "",
                         user.firstName,
                         user.lastName
                     );
@@ -58,7 +60,8 @@ export const makeUserService = (userUseCases: UserUseCases):UserService => ({
                         user.userName,
                         user.password,
                         user.firstName,
-                        user.lastName
+                        user.lastName,
+                        user.carts?.map(cart => cartControllerDtoToDomain(cart))
                     );
                     break;
                 default:
@@ -73,4 +76,16 @@ export const makeUserService = (userUseCases: UserUseCases):UserService => ({
             throw new Error(response.reason);
         },
     getAllUsers: userUseCases.getAllUsers,
+    addCart: (listener: Listener<UserEvent>) => async (user: User) => {
+        const event = "UPDATE_USER";
+        const unsubscribe = userObserver.subscribe(listener);
+        const response  = await userUseCases.addCart(user);
+        if (!IsErrorUserResult(response)) {
+            userObserver.publish(event);
+            unsubscribe();
+            return response.result;
+        }
+        unsubscribe();
+        throw new Error(response.reason);
+    }
 });
