@@ -9,11 +9,9 @@ import { CartPresenterDto } from "../../adapters/CartDto";
 import { OrderPresenterDto } from "../../adapters/OrderDto";
 import { ProductPresenterDto } from "../../adapters/ProductDto";
 
-const users: Record<string, UserControllerDto> = {};
+let users: Record<string, UserControllerDto> = {};
 
-const userControllerDtoToUserPresenterDto = (
-    user: UserControllerDto
-) =>
+const userControllerDtoToUserPresenterDto = (user: UserControllerDto) =>
     new UserPresenterDto(
         user.id || "User id error in repository",
         user.userName || "User name error in repository",
@@ -84,5 +82,11 @@ export const makeInMemoryUserRepository = (
                 result: inMemoryUsersToUsersPresenterDto(users),
             })
         );
+    },
+    removeAllUsers: () => {
+        return new Promise<void>((resolve) => {
+            users = {};
+            return resolve();
+        });
     },
 });

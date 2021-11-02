@@ -10,6 +10,7 @@ export const makeAddUser =
         userController: UserControllerDto
     ) => {
         const user = userController.toDomain();
+        if(user.password?.value.length === 0) throw new Error("Password is mandatory");
         const response = await repository.createUser(
             new UserControllerDto(
                 user.id?.value,

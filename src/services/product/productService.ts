@@ -8,6 +8,7 @@ export interface ProductUseCases {
     addProduct: (product: ProductControllerDto) => Promise<ProductPresenterDto>;
     updateProduct: (product: ProductControllerDto) => Promise<ProductPresenterDto>;
     getAllProducts: () => Promise<ProductPresenterDto[]>;
+    removeAllProducts: () => Promise<void>;
 }
 
 export interface ProductService extends ProductUseCases {
@@ -35,5 +36,6 @@ export const makeProductService = (
         return response;
     },
     getAllProducts: productUseCases.getAllProducts,
+    removeAllProducts: productUseCases.removeAllProducts,
     subscribe: (listener: Listener<ProductEvent>) => productObserver.subscribe(listener)
 });

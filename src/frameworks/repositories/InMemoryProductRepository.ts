@@ -9,7 +9,7 @@ import {
     ProductPresenterDto,
 } from "../../adapters/ProductDto";
 
-const products: Record<string, ProductControllerDto> = {};
+let products: Record<string, ProductControllerDto> = {};
 
 const inMemoryProductsToProductsPresenterDto = (
     _products: Record<string, ProductControllerDto>
@@ -73,4 +73,10 @@ export const makeInMemoryProductRepository = (
             })
         );
     },
+    removeAllProducts: () => {
+        return new Promise<void>((resolve) => {
+            products = {};
+            return resolve();
+        })
+    }
 });

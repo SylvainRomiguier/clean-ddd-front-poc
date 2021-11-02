@@ -50,6 +50,7 @@ export const UsersTemplate: React.FC = () => {
     useEffect(() => {
         const unsubscribe =
         services.userService.subscribe(updateUsersList);
+        services.userService.removeAllUsers();
         services.userService.addUser(
             new UserControllerDto(
                 undefined,

@@ -6,6 +6,7 @@ export interface UserUseCases {
     updateUser: (user: UserControllerDto) => Promise<UserPresenterDto>;
     getUserById: (id: string) => Promise<UserPresenterDto>;
     getAllUsers: () => Promise<UserPresenterDto[]>;
+    removeAllUsers: () => Promise<void>;
     addCart: (user: UserControllerDto) => Promise<UserPresenterDto>;
 }
 
@@ -29,6 +30,7 @@ export const makeUserService = (userUseCases: UserUseCases): UserService => ({
     },
     getUserById: userUseCases.getUserById,
     getAllUsers: userUseCases.getAllUsers,
+    removeAllUsers: userUseCases.removeAllUsers,
     addCart: (user: UserControllerDto) => {
         const response = userUseCases.addCart(user);
         userObserver.publish("UPDATE_USER");

@@ -27,4 +27,5 @@ export interface IUserRepository {
     ) => Promise<ErrorResult | SuccessResult<boolean>>;
     getUserById: (id: string) => Promise<UserResult>;
     getAllUsers: () => Promise<UsersResult>;
+    removeAllUsers: () => Promise<void>;
 }

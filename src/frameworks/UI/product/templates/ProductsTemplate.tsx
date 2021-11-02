@@ -19,10 +19,10 @@ export const ProductsTemplate: React.FC = () => {
     const updateProductsList = async () =>
         setProductsList(await services.productService.getAllProducts());
 
-    const onProductAdd = (product: ProductFormOutput) => {
+    const onProductAdd = async (product: ProductFormOutput) => {
         const unsubscribe =
             services.productService.subscribe(updateProductsList);
-        services.productService.addProduct(
+        await services.productService.addProduct(
             new ProductControllerDto(
                 product.name,
                 product.qtyInStock,
@@ -50,6 +50,7 @@ export const ProductsTemplate: React.FC = () => {
     useEffect(() => {
         const unsubscribe =
             services.productService.subscribe(updateProductsList);
+            services.productService.removeAllProducts();
         services.productService.addProduct(
             new ProductControllerDto("Apple", 10)
         );

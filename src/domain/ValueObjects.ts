@@ -26,8 +26,7 @@ export class Password implements ValueObject {
         if (this.validate(value)) this.value = value;
     }
     validate(value: string): boolean {
-        if (value.length === 0) throw new Error("Password is mandatory");
-        if (!value.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{6,}$/))
+        if (value.length > 0 && !value.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{6,}$/))
             throw new Error(
                 "Password should have at least 6 characters, one lower case, one upper case, one digit."
             );
@@ -85,7 +84,7 @@ export class ProductName implements ValueObject {
     validate(value: string = ""): boolean {
         if (!value.match(/^(?=.*[a-zA-Z])[0-9a-zA-Z]{4,}$/))
             throw new Error(
-                "Product name should atleast have 4 characters with one letter"
+                "Product name should have  at least 4 characters with one letter"
             );
         return true;
     }

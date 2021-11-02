@@ -27,4 +27,5 @@ export interface IProductRepository {
     ) => Promise<ErrorResult | SuccessResult<boolean>>;
     getProductById: (id: string) => Promise<ProductResult>;
     getAllProducts: () => Promise<ProductsResult>;
+    removeAllProducts: () => Promise<void>;
 }
