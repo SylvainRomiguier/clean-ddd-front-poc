@@ -1,82 +1,90 @@
 import { useEffect, useState } from "react";
-import { UserPresenterDto, userPresenterDtoFromDomain } from "../../../../adapters/UserDto";
+import {
+    UserControllerDto,
+    UserPresenterDto,
+} from "../../../../adapters/UserDto";
 import { services } from "../../../../services/ioc";
-import { UserEvent } from "../../../../services/user/userService";
 import { UserDetails } from "../molecules/userDetails/UserDetails";
 import { UserFormOutput, UserForm } from "../organisms/userForm/UserForm";
 import { UserListOfCards } from "../organisms/userListOfCards/UserListOfCards";
 
-export const UsersTemplate:React.FC = () => {
+export const UsersTemplate: React.FC = () => {
     const [usersList, setUsersList] = useState<UserPresenterDto[]>([]);
     const [selectedUser, setSelectedUser] = useState<
         UserPresenterDto | undefined
     >(undefined);
 
-        const updateUsersList = async (event: UserEvent) => {
-        const usersListRead = await services.userService.getAllUsers();
-        setUsersList(
-            usersListRead.map((user) => userPresenterDtoFromDomain(user))
+    const updateUsersList = async () =>
+        setUsersList(await services.userService.getAllUsers());
+
+    const onUserAdd = async (user: UserFormOutput) => {
+        const unsubscribe = services.userService.subscribe(updateUsersList);
+        await services.userService.addUser(
+            new UserControllerDto(
+                undefined,
+                user.userName,
+                user.password,
+                user.firstName,
+                user.lastName
+            )
         );
+        unsubscribe();
     };
 
     const onUserUpdate = async (user: UserFormOutput) => {
-        const _user = await services.userService.handleUser(
-            "UPDATE_USER",
-            updateUsersList
-        )(user);
+        const unsubscribe = services.userService.subscribe(updateUsersList);
+        const _user = await services.userService.updateUser(
+            new UserControllerDto(
+                user.id,
+                user.userName,
+                user.password,
+                user.firstName,
+                user.lastName
+            )
+        );
+        unsubscribe();
         if (_user.id) setSelectedUser(undefined);
-        return _user;
     };
 
-     // example data
+    // example data
     useEffect(() => {
-        const addExamples = async () => {
-          await services.userService.handleUser(
-              "CREATE_USER",
-              updateUsersList
-          )({
-              userName: "SylvainUserName",
-              password: "123456",
-              firstName: "Sylvain",
-              lastName: "Romiguier",
-          });
-        };
-        addExamples();
+        const unsubscribe =
+        services.userService.subscribe(updateUsersList);
+        services.userService.addUser(
+            new UserControllerDto(
+                undefined,
+                "SylvainUserName",
+                "aA123456",
+                "Sylvain",
+                "Romiguier"
+            )
+        );
+        unsubscribe();
     }, []);
-      // -----------------
-    
-    return (<div className="userContainer">
-    <div style={{ width: "30%" }}>
-        {selectedUser ? (
-            <>
-                <UserForm
-                    id={selectedUser.id}
-                    userName={selectedUser.userName}
-                    firstName={selectedUser.firstName}
-                    lastName={selectedUser.lastName}
-                    onSubmit={onUserUpdate}
-                />
-            </>
-        ) : (
-            <UserForm
-                onSubmit={services.userService.handleUser(
-                    "CREATE_USER",
-                    updateUsersList
-                )}
-            />
-        )}
-    </div>
-    <div className="containerList">
-        {selectedUser ? (
-            <UserDetails user={selectedUser}/>
-        ) : (
-            <UserListOfCards
-                selectUser={setSelectedUser}
-                selectedUser={selectedUser}
-                usersList={usersList}
-            />
-        )}
-    </div>
-</div>)
-}
+    // -----------------
 
+    return (
+        <div className="userContainer">
+            <div style={{ width: "30%" }}>
+                <UserForm
+                    id={selectedUser?.id}
+                    userName={selectedUser?.userName}
+                    firstName={selectedUser?.firstName}
+                    lastName={selectedUser?.lastName}
+                    onSubmit={selectedUser ? onUserUpdate : onUserAdd}
+                />
+            </div>
+            <div className="containerList">
+                {selectedUser ? (
+                    <UserDetails user={selectedUser} />
+                ) : (
+                    <UserListOfCards
+                        selectUser={setSelectedUser}
+                        selectedUser={selectedUser}
+                        usersList={usersList}
+                    />
+                )}
+            </div>
+        </div>
+    );
+};

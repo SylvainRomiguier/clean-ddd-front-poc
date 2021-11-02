@@ -1,31 +1,47 @@
-import { makeUser } from "../../domain/user";
-import { IUserRepository } from "../../adapters/IUserRepository";
-import { userControllerDtoFromDomain } from "../../adapters/UserDto";
-import {
-    FirstName,
-    LastName,
-    Password,
-    UniqueId,
-    UserName,
-} from "../../domain/types";
-import { Cart } from "../../domain/user";
+import { IsErrorUserResult, IUserRepository } from "../../adapters/IUserRepository";
+import { UserControllerDto } from "../../adapters/UserDto";
+import { CartControllerDto } from "../../adapters/CartDto";
+import { OrderControllerDto } from "../../adapters/OrderDto";
+import { ProductControllerDto } from "../../adapters/ProductDto";
 
 export const makeUpdateUser =
     (repository: IUserRepository) =>
     async (
-        id: UniqueId,
-        userName: UserName,
-        password?: Password,
-        firstName?: FirstName,
-        lastName?: LastName,
-        carts?: Cart[]
+        userController:UserControllerDto
     ) => {
-        if (userName.length < 1) throw new Error("UserName is mandatory.");
-        if (password && password.length < 1)
-            throw new Error("Password is mandatory.");
-        return repository.updateUser(
-            userControllerDtoFromDomain(
-                makeUser(userName, id, password, firstName, lastName, carts)
+    
+        const user = userController.toDomain();
+        if(!user.id?.value!) throw new Error("Unable to update an user without explicit id");
+        const response = await repository.updateUser(
+            new UserControllerDto(
+                user.id?.value,
+                user.userName.value,
+                user.password?.value,
+                user.firstName?.value,
+                user.lastName?.value,
+                user.carts.map(
+                    (cart) =>
+                        new CartControllerDto(
+                            cart.id?.value,
+                            cart.creationDate,
+                            cart.orders.map(
+                                (order) =>
+                                    new OrderControllerDto(
+                                        new ProductControllerDto(
+                                            order.product.name.value,
+                                            order.product.qtyInStock.value,
+                                            order.product.id?.value
+                                        ),
+                                        order.qty.value,
+                                        order.id?.value
+                                    )
+                            )
+                        )
+                )
             )
         );
+        if (!IsErrorUserResult(response)) {
+            return response.result;
+         }
+         throw new Error(response.reason);
     };

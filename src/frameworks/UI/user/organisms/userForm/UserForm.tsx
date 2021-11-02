@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { UserPresenterDto } from "../../../../../adapters/UserDto";
 import { Button } from "../../../components/atoms/button/Button";
 import { TextField } from "../../../components/molecules/textField/TextField";
 import "./UserForm.css";
@@ -18,7 +17,7 @@ export interface UserFormInput {
     password?: string;
     firstName?: string;
     lastName?: string;
-    onSubmit: (user: UserFormOutput) => Promise<UserPresenterDto>;
+    onSubmit: (user: UserFormOutput) => void;
 }
 
 const userFormInputToUserFormOutput = (

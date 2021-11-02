@@ -1,79 +1,68 @@
-import {
-    FirstName,
-    LastName,
-    Password,
-    UniqueId,
-    UserName,
-} from "../domain/types";
-import { makeUser, User } from "../domain/user";
-import {
-    CartControllerDto,
-    cartControllerDtoFromDomain,
-    CartPresenterDto,
-    cartPresenterDtoFromDomain,
-    cartPresenterDtoToDomain,
-} from "./CartDto";
+import { User } from "../domain/user";
+import { CartControllerDto, CartPresenterDto } from "./CartDto";
 
-export interface UserPresenterDto {
-    id: UniqueId;
-    userName: UserName;
-    firstName?: FirstName;
-    lastName?: LastName;
+export class UserPresenterDto {
+    id: string;
+    userName: string;
+    firstName?: string;
+    lastName?: string;
     carts?: CartPresenterDto[];
+
+    constructor(
+        _id: string,
+        _userName: string,
+        _firstName?: string,
+        _lastName?: string,
+        _carts?: CartPresenterDto[]
+    ) {
+        this.id = _id;
+        this.userName = _userName;
+        this.firstName = _firstName;
+        this.lastName = _lastName;
+        this.carts = _carts;
+    }
+
+    toDomain = () =>
+        new User(
+            this.userName,
+            this.id,
+            undefined,
+            this.firstName,
+            this.lastName,
+            this.carts?.map((cart) => cart.toDomain())
+        );
 }
 
-export interface UserControllerDto {
-    id?: UniqueId;
-    userName: UserName;
-    password?: Password;
-    firstName?: FirstName;
-    lastName?: LastName;
+export class UserControllerDto {
+    id?: string;
+    userName?: string;
+    password?: string;
+    firstName?: string;
+    lastName?: string;
     carts?: CartControllerDto[];
+    constructor(
+        _id?: string,
+        _userName?: string,
+        _password?:string,
+        _firstName?: string,
+        _lastName?: string,
+        _carts?: CartControllerDto[]
+    ) {
+        this.id = _id;
+        this.userName = _userName;
+        this.password = _password;
+        this.firstName = _firstName;
+        this.lastName = _lastName;
+        this.carts = _carts;
+    }
+
+    toDomain = () =>
+        new User(
+            this.userName,
+            this.id,
+            this.password,
+            this.firstName,
+            this.lastName,
+            this.carts?.map((cart) => cart.toDomain())
+        );
 }
-
-export const makeUserPresenterDto = (
-    id: UniqueId,
-    userName: UserName,
-    firstName?: FirstName,
-    lastName?: LastName,
-    carts?: CartPresenterDto[]
-) =>
-    Object.freeze({
-        id,
-        userName,
-        firstName,
-        lastName,
-        carts,
-    });
-
-export const userControllerDtoFromDomain = (user: User): UserControllerDto => {
-    return Object.freeze({
-        id: user.id,
-        userName: user.userName,
-        password: user.password,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        carts: user.carts?.map((cart) => cartControllerDtoFromDomain(cart)),
-    });
-};
-
-export const userPresenterDtoFromDomain = (user: User): UserPresenterDto => {
-    if (!user.id) throw new Error("User without id");
-    return Object.freeze({
-        id: user.id,
-        userName: user.userName,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        carts: user.carts?.map((cart) => cartPresenterDtoFromDomain(cart)),
-    });
-};
-
-export const userPresenterDtoToDomain = (user: UserPresenterDto): User =>
-    makeUser(
-        user.userName,
-        user.id,
-        undefined,
-        user.firstName,
-        user.lastName,
-        user.carts?.map((cart) => cartPresenterDtoToDomain(cart))
-    );

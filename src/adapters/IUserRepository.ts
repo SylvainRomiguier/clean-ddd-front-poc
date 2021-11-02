@@ -1,4 +1,3 @@
-import { UniqueId } from "../domain/types";
 import { UserControllerDto, UserPresenterDto } from "./UserDto";
 
 interface ErrorResult {
@@ -26,6 +25,6 @@ export interface IUserRepository {
     deleteUser: (
         user: UserControllerDto
     ) => Promise<ErrorResult | SuccessResult<boolean>>;
-    getUserById: (id: UniqueId) => Promise<UserResult>;
+    getUserById: (id: string) => Promise<UserResult>;
     getAllUsers: () => Promise<UsersResult>;
 }

@@ -1,4 +1,3 @@
-import { UniqueId } from "../domain/types";
 import { ProductControllerDto, ProductPresenterDto } from "./ProductDto";
 
 interface ErrorResult {
@@ -26,6 +25,6 @@ export interface IProductRepository {
     deleteProduct: (
         user: ProductControllerDto
     ) => Promise<ErrorResult | SuccessResult<boolean>>;
-    getProductById: (id: UniqueId) => Promise<ProductResult>;
+    getProductById: (id: string) => Promise<ProductResult>;
     getAllProducts: () => Promise<ProductsResult>;
 }

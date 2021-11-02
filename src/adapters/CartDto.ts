@@ -1,51 +1,46 @@
-import { Cart, makeCart } from "../domain/user";
-import { Order } from "../domain/user";
-import { UniqueId } from "../domain/types";
-import {
-    orderControllerDtoFromDomain,
-    orderControllerDtoToDomain,
-    orderPresenterDtoFromDomain,
-    orderPresenterDtoToDomain,
-} from "./OrderDto";
+import { Cart } from "../domain/user";
+import { OrderControllerDto, OrderPresenterDto } from "./OrderDto";
 
-export interface CartControllerDto {
-    id?: UniqueId;
+export class CartControllerDto {
+    id?: string;
     creationDate?: Date;
-    orders?: Order[];
+    orders?: OrderControllerDto[];
+    constructor(
+        id?: string,
+        creationDate?: Date,
+        orders?: OrderControllerDto[]
+    ) {
+        this.id = id;
+        this.creationDate = creationDate;
+        this.orders = orders;
+    }
+
+    toDomain = () =>
+        new Cart(
+            this.id,
+            this.creationDate,
+            this.orders?.map((order) => order.toDomain())
+        );
 }
 
-export interface CartPresenterDto {
-    id?: UniqueId;
+export class CartPresenterDto {
+    id?: string;
     creationDate?: Date;
-    orders?: Order[];
+    orders?: OrderPresenterDto[];
+    constructor(
+        id?: string,
+        creationDate?: Date,
+        orders?: OrderPresenterDto[]
+    ) {
+        this.id = id;
+        this.creationDate = creationDate;
+        this.orders = orders;
+    }
+
+    toDomain = () =>
+        new Cart(
+            this.id,
+            this.creationDate,
+            this.orders?.map((order) => order.toDomain())
+        );
 }
-
-export const cartControllerDtoFromDomain = (cart: Cart): CartControllerDto =>
-    Object.freeze({
-        id: cart.id,
-        creationDate: cart.creationDate,
-        orders: cart.orders?.map((order) =>
-            orderControllerDtoFromDomain(order)
-        ),
-    });
-
-export const cartPresenterDtoFromDomain = (cart: Cart): CartPresenterDto =>
-    Object.freeze({
-        id: cart.id,
-        creationDate: cart.creationDate,
-        orders: cart.orders?.map((order) => orderPresenterDtoFromDomain(order)),
-    });
-
-export const cartPresenterDtoToDomain = (cart: CartPresenterDto): Cart =>
-    makeCart(
-        cart.id,
-        cart.creationDate,
-        cart.orders?.map((order) => orderPresenterDtoToDomain(order))
-    );
-
-    export const cartControllerDtoToDomain = (cart: CartControllerDto): Cart =>
-    makeCart(
-        cart.id,
-        cart.creationDate,
-        cart.orders?.map((order) => orderControllerDtoToDomain(order))
-    );

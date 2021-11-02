@@ -1,19 +1,19 @@
-import { UniqueId, Name, Quantity } from "./types";
+import { UniqueId, ProductName, Quantity } from "./ValueObjects";
 
-export interface Product {
+export class Product {
     id?: UniqueId;
-    name: Name;
+    name: ProductName;
     qtyInStock: Quantity;
-}
 
-export const makeProduct = (
-    name: Name,
-    qtyInStock: Quantity,
-    id?: UniqueId
-): Product => {
-    return Object.freeze({
-        id,
-        name,
-        qtyInStock,
-    });
-};
+    constructor(name: string, qtyInStock: number, id?: string) {
+        this.id = new UniqueId(id);
+        this.name = new ProductName(name);
+        this.qtyInStock = new Quantity(qtyInStock);
+    }
+
+    addQty = (qty: number) =>
+        (this.qtyInStock = new Quantity(this.qtyInStock.value || 0 + qty));
+
+    removeQty = (qty: number) =>
+        (this.qtyInStock = new Quantity(this.qtyInStock.value || 0 - qty));
+}

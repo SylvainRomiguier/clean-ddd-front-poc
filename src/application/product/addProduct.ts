@@ -1,15 +1,15 @@
-import { makeProduct } from "../../domain/product";
-import { IProductRepository } from "../../adapters/IProductRepository";
-import { productControllerDtoFromDomain } from "../../adapters/ProductDto";
-import { Name, Quantity } from "../../domain/types";
+import { IProductRepository, IsErrorProductResult } from "../../adapters/IProductRepository";
+import { ProductControllerDto } from "../../adapters/ProductDto";
 
 export const makeAddProduct =
     (repository: IProductRepository) =>
-    async (name: Name, qtyInStock: Quantity) => {
-        if (qtyInStock < 0) throw new Error("Stock can not be below zero.");
-        if (name.length < 4)
-            throw new Error("name is mandatory and at least 4 characters.");
-        return repository.createProduct(
-            productControllerDtoFromDomain(makeProduct(name, qtyInStock))
+    async (productController: ProductControllerDto) => {
+        const product = productController.toDomain();
+        const response = await repository.createProduct(
+            new ProductControllerDto(product.name.value, product.qtyInStock.value)
         );
+        if (!IsErrorProductResult(response)) {
+            return response.result;
+         }
+         throw new Error(response.reason);
     };

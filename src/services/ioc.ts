@@ -1,5 +1,5 @@
 import { makeAddUser } from "../application/user/addUser";
-// import { makeGetUserById } from "../application/user/getUserById";
+import { makeGetUserById } from "../application/user/getUserById";
 import { makeInMemoryUserRepository } from "../frameworks/repositories/InMemoryUserRepository";
 import { v4 as uniqueIdGenerator } from "uuid";
 import { makeGetAllUsers } from "../application/user/getAllUsers";
@@ -17,11 +17,11 @@ const inMemoryUserRepository = makeInMemoryUserRepository(uniqueIdGenerator);
 
  const addUser = makeAddUser(inMemoryUserRepository);
  const updateUser = makeUpdateUser(inMemoryUserRepository);
- // const getUserById = makeGetUserById(inMemoryUserRepository);
+ const getUserById = makeGetUserById(inMemoryUserRepository);
  const getAllUsers = makeGetAllUsers(inMemoryUserRepository);
  const addCart = makeAddCart(uniqueIdGenerator, inMemoryUserRepository);
 
-const userService = makeUserService({addUser, updateUser, getAllUsers, addCart});
+const userService = makeUserService({addUser, updateUser, getUserById, getAllUsers, addCart});
 
 const inMemoryProductRepository =
     makeInMemoryProductRepository(uniqueIdGenerator);

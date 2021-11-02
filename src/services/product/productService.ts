@@ -1,68 +1,39 @@
 import {
-    IsErrorProductResult,
-    ProductResult,
-} from "../../adapters/IProductRepository";
-import { ProductControllerDto, ProductPresenterDto } from "../../adapters/ProductDto";
-import { Product } from "../../domain/product";
-import { Name, Quantity, UniqueId } from "../../domain/types";
+    ProductControllerDto,
+    ProductPresenterDto,
+} from "../../adapters/ProductDto";
 import { createObserver, Listener } from "../observer/Observer";
 
 export interface ProductUseCases {
-    addProduct: (name: Name, qtyInStock: Quantity) => Promise<ProductResult>;
-    updateProduct: (
-        id: UniqueId,
-        name: Name,
-        qtyInStock: Quantity
-    ) => Promise<ProductResult>;
-    getAllProducts: () => Promise<Product[]>;
+    addProduct: (product: ProductControllerDto) => Promise<ProductPresenterDto>;
+    updateProduct: (product: ProductControllerDto) => Promise<ProductPresenterDto>;
+    getAllProducts: () => Promise<ProductPresenterDto[]>;
 }
 
-export interface ProductService {
-    handleProduct: (
-        event: ProductEvent,
-        listener: Listener<ProductEvent>
-    ) => (product: ProductControllerDto) => Promise<ProductPresenterDto>;
-    getAllProducts: () => Promise<Product[]>;
+export interface ProductService extends ProductUseCases {
+    subscribe: (listener: Listener<ProductEvent>) => () => void;
 }
 
-export type ProductEvent = "CREATE_PRODUCT" | "UPDATE_PRODUCT" | "REMOVE_PRODUCT";
+export type ProductEvent =
+    | "CREATE_PRODUCT"
+    | "UPDATE_PRODUCT"
+    | "REMOVE_PRODUCT";
 
 const productObserver = createObserver<ProductEvent>();
 
-export const makeProductService = (productUseCases: ProductUseCases):ProductService => ({
-    handleProduct:
-        (event: ProductEvent, listener: Listener<ProductEvent>) =>
-        async (product: ProductControllerDto): Promise<ProductPresenterDto> => {
-            const unsubscribe = productObserver.subscribe(listener);
-            let response;
-            switch (event) {
-                case "CREATE_PRODUCT":
-                    response = await productUseCases.addProduct(
-                        product.name,
-                        product.qtyInStock
-                    );
-                    break;
-                case "UPDATE_PRODUCT":
-                    if (!product.id)
-                        throw new Error(
-                            `Can not update a product without id : ${product.name}`
-                        );
-                    response = await productUseCases.updateProduct(
-                        product.id,
-                        product.name,
-                        product.qtyInStock
-                    );
-                    break;
-                default:
-                    throw new Error(`Unknown product event: ${event}`);
-            }
-            if (!IsErrorProductResult(response)) {
-                productObserver.publish(event);
-                unsubscribe();
-                return response.result;
-            }
-            unsubscribe();
-            throw new Error(response.reason);
-        },
+export const makeProductService = (
+    productUseCases: ProductUseCases
+): ProductService => ({
+    addProduct: (product: ProductControllerDto) => {
+        const response = productUseCases.addProduct(product);
+        productObserver.publish("CREATE_PRODUCT");
+        return response;
+    },
+    updateProduct: (product: ProductControllerDto) => {
+        const response = productUseCases.updateProduct(product);
+        productObserver.publish("UPDATE_PRODUCT");
+        return response;
+    },
     getAllProducts: productUseCases.getAllProducts,
+    subscribe: (listener: Listener<ProductEvent>) => productObserver.subscribe(listener)
 });

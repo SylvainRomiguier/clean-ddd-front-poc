@@ -1,43 +1,32 @@
-import { Order, makeOrder } from "../domain/user";
-import { Product } from "../domain/product";
-import { Quantity, UniqueId } from "../domain/types";
+import { Order } from "../domain/user";
 import {
-    productControllerDtoFromDomain,
-    productControllerDtoToDomain,
-    productPresenterDtoFromDomain,
-    productPresenterDtoToDomain,
+    ProductControllerDto,
+    ProductPresenterDto,
 } from "./ProductDto";
 
-export interface OrderControllerDto {
-    id?: UniqueId;
-    product: Product;
-    qty: Quantity;
+export class OrderControllerDto {
+    id?: string;
+    product: ProductControllerDto;
+    qty: number;
+    constructor(product: ProductControllerDto, qty: number, id?: string) {
+        this.id = id;
+        this.product = product;
+        this.qty = qty;
+    }
+
+    toDomain = () => new Order(this.product.toDomain(), this.qty, this.id);
 }
 
-export interface OrderPresenterDto {
-    id?: UniqueId;
-    product: Product;
-    qty: Quantity;
+export class OrderPresenterDto {
+    id: string;
+    product: ProductPresenterDto;
+    qty: number;
+
+    constructor(id: string, product: ProductPresenterDto, qty: number) {
+        this.id = id;
+        this.product = product;
+        this.qty = qty;
+    }
+
+    toDomain = () => new Order(this.product.toDomain(), this.qty, this.id);
 }
-
-export const orderControllerDtoFromDomain = (
-    order: Order
-): OrderControllerDto =>
-    Object.freeze({
-        id: order.id,
-        qty: order.qty,
-        product: productControllerDtoFromDomain(order.product),
-    });
-
-export const orderPresenterDtoFromDomain = (order: Order): OrderPresenterDto =>
-    Object.freeze({
-        id: order.id,
-        qty: order.qty,
-        product: productPresenterDtoFromDomain(order.product),
-    });
-
-export const orderPresenterDtoToDomain = (order: OrderPresenterDto): Order =>
-    makeOrder(productPresenterDtoToDomain(order.product), order.qty, order.id);
-
-    export const orderControllerDtoToDomain = (order: OrderControllerDto): Order =>
-    makeOrder(productControllerDtoToDomain(order.product), order.qty, order.id);

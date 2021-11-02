@@ -1,5 +1,4 @@
-import { UserPresenterDto, userPresenterDtoToDomain } from "../../../../../adapters/UserDto";
-import { services } from "../../../../../services/ioc";
+import { UserPresenterDto } from "../../../../../adapters/UserDto";
 import { Button } from "../../../components/atoms/button/Button";
 
 export interface UserDetailsProps {

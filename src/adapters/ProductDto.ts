@@ -1,51 +1,26 @@
-import { Product, makeProduct } from "../domain/product";
-import { Quantity, UniqueId, Name } from "../domain/types";
+import { Product } from "../domain/product";
 
-export interface ProductControllerDto {
-    id?: UniqueId;
-    name: Name;
-    qtyInStock: Quantity;
+export class ProductControllerDto {
+    id?: string;
+    name: string;
+    qtyInStock: number;
+
+    constructor(_name: string, _qtyInStock: number, _id?: string) {
+        this.id = _id;
+        this.name = _name;
+        this.qtyInStock = _qtyInStock;
+    }
+    toDomain = () => new Product(this.name, this.qtyInStock, this.id);
 }
 
-export interface ProductPresenterDto {
-    id?: UniqueId;
-    name: Name;
-    qtyInStock: Quantity;
+export class ProductPresenterDto {
+    id?: string;
+    name: string;
+    qtyInStock: number;
+    constructor(_name: string, _qtyInStock: number, _id?: string) {
+        this.id = _id;
+        this.name = _name;
+        this.qtyInStock = _qtyInStock;
+    }
+    toDomain = () => new Product(this.name, this.qtyInStock, this.id);
 }
-
-export const makeProductPresenterDto = (
-    id: UniqueId,
-    name: Name,
-    qtyInStock: Quantity
-) =>
-    Object.freeze({
-        id,
-        name,
-        qtyInStock,
-    });
-
-export const productControllerDtoFromDomain = (
-    product: Product
-): ProductControllerDto =>
-    Object.freeze({
-        id: product.id,
-        qtyInStock: product.qtyInStock,
-        name: product.name,
-    });
-
-export const productPresenterDtoFromDomain = (
-    product: Product
-): ProductPresenterDto =>
-    Object.freeze({
-        id: product.id,
-        qtyInStock: product.qtyInStock,
-        name: product.name,
-    });
-
-export const productPresenterDtoToDomain = (
-    product: ProductPresenterDto
-): Product => makeProduct(product.name, product.qtyInStock, product.id);
-
-export const productControllerDtoToDomain = (
-    product: ProductControllerDto
-): Product => makeProduct(product.name, product.qtyInStock, product.id);

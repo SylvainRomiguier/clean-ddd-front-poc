@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import {
+    ProductControllerDto,
     ProductPresenterDto,
-    productPresenterDtoFromDomain,
 } from "../../../../adapters/ProductDto";
 import { services } from "../../../../services/ioc";
-import { ProductEvent } from "../../../../services/product/productService";
-import { ProductFormOutput, ProductForm } from "../organisms/productForm/ProductForm";
+import {
+    ProductFormOutput,
+    ProductForm,
+} from "../organisms/productForm/ProductForm";
 import { ProductListOfCards } from "../organisms/productListOfCards/ProductListOfCards";
 
 export const ProductsTemplate: React.FC = () => {
@@ -14,73 +16,62 @@ export const ProductsTemplate: React.FC = () => {
         ProductPresenterDto | undefined
     >(undefined);
 
-    const updateProductsList = async (event: ProductEvent) => {
-        const productsListRead = await services.productService.getAllProducts();
-        setProductsList(
-            productsListRead.map((product) =>
-                productPresenterDtoFromDomain(product)
+    const updateProductsList = async () =>
+        setProductsList(await services.productService.getAllProducts());
+
+    const onProductAdd = (product: ProductFormOutput) => {
+        const unsubscribe =
+            services.productService.subscribe(updateProductsList);
+        services.productService.addProduct(
+            new ProductControllerDto(
+                product.name,
+                product.qtyInStock,
+                undefined
             )
         );
+        unsubscribe();
     };
 
     const onProductUpdate = async (product: ProductFormOutput) => {
-        const _product = await services.productService.handleProduct(
-            "UPDATE_PRODUCT",
-            updateProductsList
-        )(product);
+        const unsubscribe =
+            services.productService.subscribe(updateProductsList);
+        const _product = await services.productService.updateProduct(
+            new ProductControllerDto(
+                product.name,
+                product.qtyInStock,
+                product.id
+            )
+        );
         if (_product.id) setSelectedProduct(undefined);
-        return _product;
+        unsubscribe();
     };
 
     // example data
     useEffect(() => {
-        const addExamples = async () => {
-            await services.productService.handleProduct(
-                "CREATE_PRODUCT",
-                updateProductsList
-            )({
-                name: "Apple",
-                qtyInStock: 10,
-            });
-            await services.productService.handleProduct(
-                "CREATE_PRODUCT",
-                updateProductsList
-            )({
-                name: "Pear",
-                qtyInStock: 15,
-            });
-            await services.productService.handleProduct(
-                "CREATE_PRODUCT",
-                updateProductsList
-            )({
-                name: "Cherry",
-                qtyInStock: 5,
-            });
-        };
-        addExamples();
+        const unsubscribe =
+            services.productService.subscribe(updateProductsList);
+        services.productService.addProduct(
+            new ProductControllerDto("Apple", 10)
+        );
+        services.productService.addProduct(
+            new ProductControllerDto("Pear", 15)
+        );
+        services.productService.addProduct(
+            new ProductControllerDto("Cherry", 10)
+        );
+        unsubscribe();
     }, []);
 
     // -----------------
     return (
         <div className="productContainer">
             <div style={{ width: "30%" }}>
-                {selectedProduct ? (
-                    <>
-                        <ProductForm
-                            id={selectedProduct.id}
-                            name={selectedProduct.name}
-                            qtyInStock={selectedProduct.qtyInStock}
-                            onSubmit={onProductUpdate}
-                        />
-                    </>
-                ) : (
-                    <ProductForm
-                        onSubmit={services.productService.handleProduct(
-                            "CREATE_PRODUCT",
-                            updateProductsList
-                        )}
-                    />
-                )}
+                <ProductForm
+                    id={selectedProduct?.id}
+                    name={selectedProduct?.name}
+                    qtyInStock={selectedProduct?.qtyInStock}
+                    onSubmit={selectedProduct ? onProductUpdate : onProductAdd}
+                />
             </div>
             <div className="containerList">
                 <ProductListOfCards

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { ProductPresenterDto } from "../../../../../adapters/ProductDto";
 import { Button } from "../../../components/atoms/button/Button";
 import { NumberField } from "../../../components/molecules/numberField/NumberField";
 import { TextField } from "../../../components/molecules/textField/TextField";
@@ -15,7 +14,7 @@ interface ProductFormInput {
     id?: string;
     name?: string;
     qtyInStock?: number;
-    onSubmit: (product: ProductFormOutput) => Promise<ProductPresenterDto>;
+    onSubmit: (product: ProductFormOutput) => void;
 }
 
 const productFormInputToProductFormOutput = (
