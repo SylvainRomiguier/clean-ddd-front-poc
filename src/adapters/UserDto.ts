@@ -31,6 +31,16 @@ export class UserPresenterDto {
             this.lastName,
             this.carts?.map((cart) => cart.toDomain())
         );
+
+    toUserControllerDto = () =>
+        new UserControllerDto(
+            this.id,
+            this.userName,
+            undefined,
+            this.firstName,
+            this.lastName,
+            this.carts?.map((cart) => cart.toCartControllerDto())
+        );
 }
 
 export class UserControllerDto {
@@ -43,7 +53,7 @@ export class UserControllerDto {
     constructor(
         _id?: string,
         _userName?: string,
-        _password?:string,
+        _password?: string,
         _firstName?: string,
         _lastName?: string,
         _carts?: CartControllerDto[]

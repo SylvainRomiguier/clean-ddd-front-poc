@@ -72,7 +72,7 @@ export const UserForm: React.FC<UserFormInput> = ({
             <TextField label="First name" value={userInput.firstName} onChange={(firstName) =>setUserInput({ ...userInput, firstName })} />
             <TextField label="Last name" value={userInput.lastName} onChange={(lastName) =>setUserInput({ ...userInput, lastName })} />
             <Button onClick={submit}> 
-                {userInput.id ? "Modifier" : "Ajouter"}
+                {userInput.id ? "Update" : "Add"}
           </Button>
             {error && <div>{error}</div>}
         </div>

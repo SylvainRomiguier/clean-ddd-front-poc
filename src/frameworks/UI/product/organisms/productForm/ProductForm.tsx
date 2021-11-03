@@ -77,7 +77,7 @@ export const ProductForm: React.FC<ProductFormInput> = ({
                 />
             </div>
             <Button onClick={submit}>
-                {productInput.id ? "Modifier" : "Ajouter"}
+                {productInput.id ? "Update" : "Add"}
             </Button>
             {error && <div>{error}</div>}
         </div>

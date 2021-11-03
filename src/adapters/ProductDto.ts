@@ -23,4 +23,5 @@ export class ProductPresenterDto {
         this.qtyInStock = _qtyInStock;
     }
     toDomain = () => new Product(this.name, this.qtyInStock, this.id);
+    toProductControllerDto = () => new ProductControllerDto(this.name, this.qtyInStock, this.id);
 }

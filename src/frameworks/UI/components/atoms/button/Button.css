@@ -7,8 +7,7 @@
     border-radius: 5px;
     cursor: pointer;
     width: 100%;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding: 10px;
     text-transform: uppercase;
     font-weight: bold;
 }

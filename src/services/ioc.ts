@@ -22,7 +22,7 @@ const inMemoryUserRepository = makeInMemoryUserRepository(uniqueIdGenerator);
  const getUserById = makeGetUserById(inMemoryUserRepository);
  const getAllUsers = makeGetAllUsers(inMemoryUserRepository);
  const removeAllUsers = makeRemoveAllUsers(inMemoryUserRepository);
- const addCart = makeAddCart(uniqueIdGenerator, inMemoryUserRepository);
+ const addCart = makeAddCart(uniqueIdGenerator, inMemoryUserRepository, getUserById);
 
 const userService = makeUserService({addUser, updateUser, getUserById, getAllUsers, removeAllUsers, addCart});
 

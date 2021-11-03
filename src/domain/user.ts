@@ -40,6 +40,12 @@ export class User {
         }
     };
 
+    updateCart = (cart: Cart) => {
+        const _carts = this.carts.filter((c) => c.id !== cart.id);
+        _carts.push(cart);
+        this.carts = _carts;
+    };
+
     removeCart = (cart: Cart) => {
         this.carts = this.carts.filter((c) => c.id !== cart.id);
     };

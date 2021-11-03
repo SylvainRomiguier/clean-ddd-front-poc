@@ -29,4 +29,6 @@ export class OrderPresenterDto {
     }
 
     toDomain = () => new Order(this.product.toDomain(), this.qty, this.id);
+
+    toOrderControllerDto = () => new OrderControllerDto(this.product.toProductControllerDto(),this.qty, this.id);
 }

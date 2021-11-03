@@ -7,7 +7,7 @@ export interface UserUseCases {
     getUserById: (id: string) => Promise<UserPresenterDto>;
     getAllUsers: () => Promise<UserPresenterDto[]>;
     removeAllUsers: () => Promise<void>;
-    addCart: (user: UserControllerDto) => Promise<UserPresenterDto>;
+    addCart: (userId: string) => Promise<UserPresenterDto>;
 }
 
 export interface UserService extends UserUseCases {
@@ -31,8 +31,8 @@ export const makeUserService = (userUseCases: UserUseCases): UserService => ({
     getUserById: userUseCases.getUserById,
     getAllUsers: userUseCases.getAllUsers,
     removeAllUsers: userUseCases.removeAllUsers,
-    addCart: (user: UserControllerDto) => {
-        const response = userUseCases.addCart(user);
+    addCart: (userId: string) => {
+        const response = userUseCases.addCart(userId);
         userObserver.publish("UPDATE_USER");
         return response;
     },

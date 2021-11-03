@@ -43,4 +43,6 @@ export class CartPresenterDto {
             this.creationDate,
             this.orders?.map((order) => order.toDomain())
         );
+
+        toCartControllerDto = () => new CartControllerDto(this.id, this.creationDate, this.orders?.map(order => order.toOrderControllerDto()));
 }

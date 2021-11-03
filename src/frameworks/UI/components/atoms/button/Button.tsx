@@ -5,7 +5,13 @@ export interface ButtonProps {
 }
 
 export const Button: React.FC<ButtonProps> = ({ children, onClick }) => (
-    <div onClick={onClick} className="button">
+    <div
+        onClick={(e) => {
+            e.stopPropagation();
+            onClick();
+        }}
+        className="button"
+    >
         {children}
     </div>
 );

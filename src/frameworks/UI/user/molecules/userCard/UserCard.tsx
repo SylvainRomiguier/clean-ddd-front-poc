@@ -17,5 +17,6 @@ export const UserCard: React.FC<UserCardProps> = ({
         <div>{user.userName}</div>
         <div>{user.firstName && user.firstName}</div>
         <div>{user.lastName && user.lastName}</div>
+        <div>Carts count : {user.carts?.length || 0}</div>
     </Card>
 );
