@@ -14,7 +14,7 @@ export const CartListOfCards: React.FC<CartListOfCardsProps> = ({
     selectedCart,
 }) => (
     <ListOfCards>
-        {cartsList.map((cart) => (
+        {cartsList.sort((a,b) => (a.creationDate?.getTime() || 0) - (b.creationDate?.getTime() || 0)).map((cart) => (
             <CartCard
                 key={cart.id}
                 onClick={() => selectCart(cart)}

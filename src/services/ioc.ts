@@ -14,6 +14,8 @@ import { makeServices } from "./services";
 import { makeAddCart } from "../application/user/addCart";
 import { makeRemoveAllUsers } from "../application/user/removeAllUsers";
 import { makeRemoveAllProducts } from "../application/product/removeAllProducts";
+import { makeAddOrderToCart } from "../application/user/addOrderToCart";
+import { makeGetProductById } from "../application/product/getProductById";
 
 const inMemoryUserRepository = makeInMemoryUserRepository(uniqueIdGenerator);
 
@@ -23,17 +25,20 @@ const inMemoryUserRepository = makeInMemoryUserRepository(uniqueIdGenerator);
  const getAllUsers = makeGetAllUsers(inMemoryUserRepository);
  const removeAllUsers = makeRemoveAllUsers(inMemoryUserRepository);
  const addCart = makeAddCart(uniqueIdGenerator, inMemoryUserRepository, getUserById);
-
-const userService = makeUserService({addUser, updateUser, getUserById, getAllUsers, removeAllUsers, addCart});
-
+ 
 const inMemoryProductRepository =
     makeInMemoryProductRepository(uniqueIdGenerator);
 
  const addProduct = makeAddProduct(inMemoryProductRepository);
  const updateProduct = makeUpdateProduct(inMemoryProductRepository);
+ const getProductById = makeGetProductById(inMemoryProductRepository);
  const getAllProducts = makeGetAllProducts(inMemoryProductRepository);
  const removeAllProducts = makeRemoveAllProducts(inMemoryProductRepository);
 
-const productService = makeProductService({addProduct, updateProduct, getAllProducts, removeAllProducts});
+ const addOrderToCart = makeAddOrderToCart(uniqueIdGenerator, inMemoryUserRepository, inMemoryProductRepository, getProductById, getUserById);
+
+ const userService = makeUserService({addUser, updateUser, getUserById, getAllUsers, removeAllUsers, addCart, addOrderToCart});
+ const productService = makeProductService({addProduct, updateProduct, getAllProducts, removeAllProducts});
 
 export const services = makeServices({userService, productService});
+

@@ -12,8 +12,8 @@ export class Product {
     }
 
     addQty = (qty: number) =>
-        (this.qtyInStock = new Quantity(this.qtyInStock.value || 0 + qty));
+        (this.qtyInStock = new Quantity((this.qtyInStock.value || 0) + qty));
 
     removeQty = (qty: number) =>
-        (this.qtyInStock = new Quantity(this.qtyInStock.value || 0 - qty));
+        (this.qtyInStock = new Quantity((this.qtyInStock.value || 0) - qty));
 }

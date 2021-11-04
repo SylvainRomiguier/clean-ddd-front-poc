@@ -4,20 +4,20 @@ import { ProductCard } from "../../molecules/productCard/ProductCard";
 
 export interface ProductListOfCardsProps {
     productsList: ProductPresenterDto[];
-    selectProduct: (product: ProductPresenterDto) => void;
+    onSelectProductId: (productId?: string) => void;
     selectedProduct: ProductPresenterDto | undefined;
 }
 
 export const ProductListOfCards: React.FC<ProductListOfCardsProps> = ({
     productsList,
-    selectProduct,
+    onSelectProductId,
     selectedProduct,
 }) => (
     <ListOfCards>
         {productsList.map((product) => (
             <ProductCard
                 key={product.id}
-                onClick={() => selectProduct(product)}
+                onClick={() => onSelectProductId(product.id)}
                 selected={
                     selectedProduct! && selectedProduct.id === product.id
                 }

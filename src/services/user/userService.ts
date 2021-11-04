@@ -1,5 +1,6 @@
 import { UserControllerDto, UserPresenterDto } from "../../adapters/UserDto";
 import { Listener, createObserver } from "../observer/Observer";
+import { productObserver } from "../product/productService";
 
 export interface UserUseCases {
     addUser: (user: UserControllerDto) => Promise<UserPresenterDto>;
@@ -8,6 +9,12 @@ export interface UserUseCases {
     getAllUsers: () => Promise<UserPresenterDto[]>;
     removeAllUsers: () => Promise<void>;
     addCart: (userId: string) => Promise<UserPresenterDto>;
+    addOrderToCart: (
+        userId: string,
+        cartId: string,
+        productId: string,
+        quantity: number
+    ) => Promise<UserPresenterDto>;
 }
 
 export interface UserService extends UserUseCases {
@@ -31,9 +38,25 @@ export const makeUserService = (userUseCases: UserUseCases): UserService => ({
     getUserById: userUseCases.getUserById,
     getAllUsers: userUseCases.getAllUsers,
     removeAllUsers: userUseCases.removeAllUsers,
-    addCart: (userId: string) => {
-        const response = userUseCases.addCart(userId);
+    addCart: async (userId: string) => {
+        const response = await userUseCases.addCart(userId);
         userObserver.publish("UPDATE_USER");
+        return response;
+    },
+    addOrderToCart: async (
+        userId: string,
+        cartId: string,
+        productId: string,
+        quantity: number
+    ) => {
+        const response = await userUseCases.addOrderToCart(
+            userId,
+            cartId,
+            productId,
+            quantity
+        );
+        userObserver.publish("UPDATE_USER");
+        productObserver.publish("UPDATE_PRODUCT");
         return response;
     },
     subscribe: (listener: Listener<UserEvent>) =>

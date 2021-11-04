@@ -20,7 +20,7 @@ export type ProductEvent =
     | "UPDATE_PRODUCT"
     | "REMOVE_PRODUCT";
 
-const productObserver = createObserver<ProductEvent>();
+export const productObserver = createObserver<ProductEvent>();
 
 export const makeProductService = (
     productUseCases: ProductUseCases

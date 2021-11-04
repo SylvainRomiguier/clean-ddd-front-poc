@@ -3,18 +3,13 @@
     flex-direction: column;
     padding: 10px;
     border-radius: 10px;
-    border: 1px solid lightcoral;
     margin-bottom: 5px;
     max-width: 400px;
     min-width: 200px;
     cursor: pointer;
-    height: 100px;
-}
-
-.selected {
-    background-color: coral;
-    color: white;
-    font-weight: bolder;
+    min-height: 100px;
+    max-height: 200px;
+    overflow-y: auto;
 }
 
 .card > * {

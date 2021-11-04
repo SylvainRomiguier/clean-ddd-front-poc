@@ -5,16 +5,16 @@ import { CartListOfCards } from "../../organisms/cartListOfCards/CartListOfCards
 
 export interface UserDetailsProps {
     user: UserPresenterDto;
-    onAddCart: () => void;
+    onAddCart: (userId: string) => void;
     selectedCart: CartPresenterDto | undefined;
-    setSelectedCart: (cart: CartPresenterDto) => void;
+    onSelectCartId: (cartId?: string) => void;
 }
 
 export const UserDetails: React.FC<UserDetailsProps> = ({
     user,
     onAddCart,
     selectedCart,
-    setSelectedCart,
+    onSelectCartId,
 }) => (
     <div>
         <div>Id : {user.id}</div>
@@ -22,11 +22,15 @@ export const UserDetails: React.FC<UserDetailsProps> = ({
         <div>
             {user.firstName} {user.lastName}
         </div>
-        <Button onClick={onAddCart}>Add cart</Button>
+        <div>
+            Carts count : {user.carts?.length || 0}
+        </div>
+        <div>Orders count : {user.carts?.reduce((acc, cart) => acc+(cart?.orders?.length || 0), 0)}</div>
+        <Button onClick={() => onAddCart(user.id)}>Add cart</Button>
         <div style={{ marginTop: "10px" }}></div>
         <CartListOfCards
             cartsList={user.carts || []}
-            selectCart={(cart) => setSelectedCart(cart)}
+            selectCart={(cart) => onSelectCartId(cart.id)}
             selectedCart={selectedCart}
         />
     </div>

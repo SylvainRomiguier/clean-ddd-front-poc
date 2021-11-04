@@ -4,20 +4,20 @@ import { UserCard } from "../../molecules/userCard/UserCard";
 
 export interface UserListOfCardsProps {
     usersList: UserPresenterDto[];
-    selectUser: (user: UserPresenterDto) => void;
-    selectedUser: UserPresenterDto | undefined;
+    onSelectUserId: (userId?: string) => void;
+    selectedUser?: UserPresenterDto;
 }
 
 export const UserListOfCards: React.FC<UserListOfCardsProps> = ({
     usersList,
-    selectUser,
+    onSelectUserId,
     selectedUser,
 }) => (
     <ListOfCards>
         {usersList.map((user) => (
             <UserCard
                 key={user.id}
-                onClick={() => selectUser(user)}
+                onClick={() => onSelectUserId(user.id)}
                 selected={
                     selectedUser! && selectedUser.id === user.id
                 }

@@ -1,5 +1,6 @@
 import { UserPresenterDto } from "../../../../../adapters/UserDto";
 import { Card } from "../../../components/atoms/card/Card";
+import { Title } from "../../../components/atoms/title/Title";
 
 export interface UserCardProps {
     onClick: () => void;
@@ -13,6 +14,7 @@ export const UserCard: React.FC<UserCardProps> = ({
     user,
 }) => (
     <Card onClick={onClick} selected={selected}>
+        <Title>User</Title>
         <div>{user.id}</div>
         <div>{user.userName}</div>
         <div>{user.firstName && user.firstName}</div>

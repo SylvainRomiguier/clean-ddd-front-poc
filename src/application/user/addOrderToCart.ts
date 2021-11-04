@@ -31,6 +31,7 @@ export const makeAddOrderToCart =
         quantity: number
     ) => {
         const user = (await getUserById(userId)).toDomain();
+
         const product = (await getProductById(productId)).toDomain();
         // remove quantity from stock
         product.removeQty(quantity);
@@ -46,11 +47,23 @@ export const makeAddOrderToCart =
 
         // create order, find the right cart and add new order to it
         // then update user
-        const newOrder = new Order(product, quantity, uniqueIdGenerator());
         const cart = user.carts.find((cart) => cart.id?.isEqualTo(cartId));
         if (!cart!)
             throw new Error(`This cart does not exist : id = ${cartId}`);
-        cart.addOrder(newOrder);
+        const existingProductOrder = cart.orders?.find(
+            (order) => order.product.id?.isEqualTo(product.id?.value)
+        );
+        if (existingProductOrder) {
+            const updatedOrder = new Order(
+                product,
+                quantity + existingProductOrder.qty.value,
+                existingProductOrder.id?.value
+            );
+            cart.updateOrder(updatedOrder);
+        } else {
+            const newOrder = new Order(product, quantity, uniqueIdGenerator());
+            cart.addOrder(newOrder);
+        }
         user.updateCart(cart);
 
         const response = await userRepository.updateUser(

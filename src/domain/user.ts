@@ -33,7 +33,7 @@ export class User {
     }
 
     addCart = (cart: Cart) => {
-        if (this.carts.find((c) => c.id === cart.id) === undefined) {
+        if (this.carts.find((c) => c.id?.value === cart.id?.value) === undefined) {
             this.carts.push(cart);
         } else {
             throw new Error("This cart has already been added");
@@ -41,13 +41,13 @@ export class User {
     };
 
     updateCart = (cart: Cart) => {
-        const _carts = this.carts.filter((c) => c.id !== cart.id);
+        const _carts = this.carts.filter((c) => c.id?.value !== cart.id?.value);
         _carts.push(cart);
         this.carts = _carts;
     };
 
     removeCart = (cart: Cart) => {
-        this.carts = this.carts.filter((c) => c.id !== cart.id);
+        this.carts = this.carts.filter((c) => c.id?.value !== cart.id?.value);
     };
 }
 
@@ -75,18 +75,18 @@ export class Cart {
     }
 
     addOrder = (order: Order) => {
-        if (this.orders.find((o) => o.id === order.id) === undefined) {
+        if (this.orders.find((o) => o.id?.value === order.id?.value) === undefined) {
             this.orders.push(order);
         } else {
             throw new Error("This order has already been added");
         }
     };
     updateOrder = (order: Order) => {
-        const _orders = this.orders.filter((c) => c.id !== order.id);
+        const _orders = this.orders.filter((c) => c.id?.value !== order.id?.value);
         _orders.push(order);
         this.orders = _orders;
     };
     removeOrder = (order: Order) => {
-        this.orders = this.orders.filter((c) => c.id !== order.id);
+        this.orders = this.orders.filter((c) => c.id?.value !== order.id?.value);
     };
 }
