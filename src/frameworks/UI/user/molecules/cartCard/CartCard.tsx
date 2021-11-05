@@ -21,7 +21,7 @@ export const CartCard: React.FC<CartCardProps> = ({
         <div>{cart.id}</div>
         <div>
             {cart.orders?.map((order) => (
-                <Order order={order} />
+                <Order key={order.id} order={order} />
             ))}
         </div>
     </Card>

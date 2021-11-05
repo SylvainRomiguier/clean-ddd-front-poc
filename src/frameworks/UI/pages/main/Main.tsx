@@ -17,17 +17,8 @@ import { OrderControllerDto } from "../../../../adapters/OrderDto";
 import { UserFormOutput } from "../../user/organisms/userForm/UserForm";
 import { Modal } from "../../components/molecules/modal/Modal";
 
-const initialErrors = {
-    onAddUser: "",
-    onUpdateUser: "",
-    onAddProduct: "",
-    onUpdateProduct: "",
-    onAddCart: "",
-    onAddOrder: "",
-};
-
 function Main() {
-    const [errors, setErrors] = useState(initialErrors);
+    const [error, setError] = useState("");
     const [productsList, setProductsList] = useState<ProductPresenterDto[]>([]);
     const [usersList, setUsersList] = useState<UserPresenterDto[]>([]);
     const [selectedUserId, setSelectedUserId] = useState<string | undefined>(
@@ -86,38 +77,59 @@ function Main() {
 
     // Product mutation handlers -----------------------------------------
     const onProductAdd = async (product: ProductFormOutput) => {
-        await services.productService.addProduct(
-            new ProductControllerDto(
-                product.name,
-                product.qtyInStock,
-                undefined
-            )
-        );
+        try {
+            await services.productService.addProduct(
+                new ProductControllerDto(
+                    product.name,
+                    product.qtyInStock,
+                    undefined
+                )
+            );
+        } catch (e) {
+            if (e instanceof Error) {
+                setError(`Add product : ${(e as Error).message}`);
+            }
+            console.log(e);
+        }
     };
 
     const onProductUpdate = async (product: ProductFormOutput) => {
-        const _product = await services.productService.updateProduct(
-            new ProductControllerDto(
-                product.name,
-                product.qtyInStock,
-                product.id
-            )
-        );
-        if (_product.id) setSelectedProductId(undefined);
+        try {
+            const _product = await services.productService.updateProduct(
+                new ProductControllerDto(
+                    product.name,
+                    product.qtyInStock,
+                    product.id
+                )
+            );
+            if (_product.id) setSelectedProductId(undefined);
+        } catch (e) {
+            if (e instanceof Error) {
+                setError(`Update Product : ${(e as Error).message}`);
+            }
+            console.log(e);
+        }
     };
     // -------------------------------------------------------------------
 
     // User, Cart, Order mutation handlers -------------------------------
     const onAddUser = async (user: UserFormOutput) => {
-        await services.userService.addUser(
-            new UserControllerDto(
-                undefined,
-                user.userName,
-                user.password,
-                user.firstName,
-                user.lastName
-            )
-        );
+        try {
+            await services.userService.addUser(
+                new UserControllerDto(
+                    undefined,
+                    user.userName,
+                    user.password,
+                    user.firstName,
+                    user.lastName
+                )
+            );
+        } catch (e) {
+            if (e instanceof Error) {
+                setError(`Add User : ${(e as Error).message}`);
+            }
+            console.log(e);
+        }
     };
 
     const onUpdateUser = async (user: UserFormOutput) => {
@@ -130,12 +142,26 @@ function Main() {
             user.lastName,
             selectedUser.carts?.map((cart) => cart.toCartControllerDto())
         );
-        const _user = await services.userService.updateUser(userController);
-        if (_user.id) setSelectedUserId(undefined);
+        try {
+            const _user = await services.userService.updateUser(userController);
+            if (_user.id) setSelectedUserId(undefined);
+        } catch (e) {
+            if (e instanceof Error) {
+                setError(`Update User : ${(e as Error).message}`);
+            }
+            console.log(e);
+        }
     };
 
     const onAddCart = async (userId: string) => {
-        await services.userService.addCart(userId);
+        try {
+            await services.userService.addCart(userId);
+        } catch (e) {
+            if (e instanceof Error) {
+                setError(`Cart : ${(e as Error).message}`);
+            }
+            console.log(e);
+        }
     };
 
     const onAddOrder = async (order: OrderControllerDto) => {
@@ -151,17 +177,14 @@ function Main() {
             );
         } catch (e) {
             if (e instanceof Error) {
-                setErrors((prevErrors) => ({
-                    ...prevErrors,
-                    onAddOrder: `${order.product.name} stock : ${(e as Error).message}`,
-                }));
+                setError(`Order or Product Stock : ${(e as Error).message}`);
             }
             console.log(e);
         }
     };
     // -------------------------------------------------------------------
 
-    const onModalClose = () => setErrors(initialErrors);
+    const onModalClose = () => setError("");
 
     const selectedUser = getUserFromUsersList(usersList, selectedUserId);
     const selectedCart = getCartFromUser(selectedUser, selectedCartId);
@@ -197,7 +220,11 @@ function Main() {
                 selectedProduct={selectedProduct}
                 productsList={productsList}
             />
-            {errors.onAddOrder !== "" && <Modal open={true} onClose={onModalClose}>{errors.onAddOrder}</Modal>}
+            {error !== "" && (
+                <Modal open={true} onClose={onModalClose}>
+                    {error}
+                </Modal>
+            )}
         </div>
     );
 }

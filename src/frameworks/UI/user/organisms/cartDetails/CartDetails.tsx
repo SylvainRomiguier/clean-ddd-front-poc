@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
+import "./CartDetails.css";
 import { CartPresenterDto } from "../../../../../adapters/CartDto";
 import { OrderControllerDto } from "../../../../../adapters/OrderDto";
 import { ProductPresenterDto } from "../../../../../adapters/ProductDto";
 import { Button } from "../../../components/atoms/button/Button";
 import { DateFormat } from "../../../components/atoms/dateFormat/DateFormat";
-import { Title } from "../../../components/atoms/title/Title";
+import { Label } from "../../../components/atoms/label/Label";
 import { NumberField } from "../../../components/molecules/numberField/NumberField";
 import { ProductsDropdown } from "../../../product/molecules/productsDropdown/ProductsDropdown";
 import { Order } from "../../molecules/order/Order";
@@ -33,9 +34,10 @@ export const CartDetails: React.FC<CartDetailsProps> = ({
             setLocalOrder(new OrderControllerDto(selectedProductToOrder, 0));
     }, [selectedProductToOrder]);
     return (
-        <div>
-            <Title>Cart : {cart.id}</Title>
-            <DateFormat date={cart.creationDate} />
+        <div className="cart-details">
+            <Label color="indigo" size={16}>Cart : {cart.id}</Label>
+            <Label color="indigo" size={16}><DateFormat date={cart.creationDate} /></Label>
+            <div style={{padding: "10px"}}>
             <ProductsDropdown>
                 {productsList.map((product) => (
                     <div
@@ -47,9 +49,10 @@ export const CartDetails: React.FC<CartDetailsProps> = ({
                     </div>
                 ))}
             </ProductsDropdown>
+            </div>
             {selectedProductToOrder! && (
                 <div style={{ display: "flex", justifyContent: "space-evenly" ,alignItems: "center" }}>
-                    <div>{selectedProductToOrder.name}</div>
+                    <Label size={24} color="teal">{selectedProductToOrder.name}</Label>
                     <div>
                         <NumberField
                             label="Quantity to order"
