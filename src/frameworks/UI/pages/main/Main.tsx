@@ -15,8 +15,19 @@ import { services } from "../../../../services/ioc";
 import { ProductFormOutput } from "../../product/organisms/productForm/ProductForm";
 import { OrderControllerDto } from "../../../../adapters/OrderDto";
 import { UserFormOutput } from "../../user/organisms/userForm/UserForm";
+import { Modal } from "../../components/molecules/modal/Modal";
+
+const initialErrors = {
+    onAddUser: "",
+    onUpdateUser: "",
+    onAddProduct: "",
+    onUpdateProduct: "",
+    onAddCart: "",
+    onAddOrder: "",
+};
 
 function Main() {
+    const [errors, setErrors] = useState(initialErrors);
     const [productsList, setProductsList] = useState<ProductPresenterDto[]>([]);
     const [usersList, setUsersList] = useState<UserPresenterDto[]>([]);
     const [selectedUserId, setSelectedUserId] = useState<string | undefined>(
@@ -131,14 +142,26 @@ function Main() {
         if (!selectedUser!) return;
         if (!selectedCart?.id!) return;
         if (!order?.product?.id!) return;
-        await services.userService.addOrderToCart(
-            selectedUser.id,
-            selectedCart.id,
-            order.product.id,
-            order.qty
-        );
+        try {
+            await services.userService.addOrderToCart(
+                selectedUser.id,
+                selectedCart.id,
+                order.product.id,
+                order.qty
+            );
+        } catch (e) {
+            if (e instanceof Error) {
+                setErrors((prevErrors) => ({
+                    ...prevErrors,
+                    onAddOrder: (e as Error).message,
+                }));
+            }
+            console.log(e);
+        }
     };
     // -------------------------------------------------------------------
+
+    const onModalClose = () => setErrors(initialErrors);
 
     const selectedUser = getUserFromUsersList(usersList, selectedUserId);
     const selectedCart = getCartFromUser(selectedUser, selectedCartId);
@@ -146,7 +169,10 @@ function Main() {
         productsList,
         selectedProductId
     );
-    const selectedProductToOrder = getProductFromProductsList(productsList, selectedProductToOrderId);
+    const selectedProductToOrder = getProductFromProductsList(
+        productsList,
+        selectedProductToOrderId
+    );
 
     return (
         <div className="appContainer">
@@ -171,6 +197,7 @@ function Main() {
                 selectedProduct={selectedProduct}
                 productsList={productsList}
             />
+            {errors.onAddOrder !== "" && <Modal open={true} onClose={onModalClose}>{errors.onAddOrder}</Modal>}
         </div>
     );
 }

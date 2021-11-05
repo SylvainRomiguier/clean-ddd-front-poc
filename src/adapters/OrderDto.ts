@@ -1,4 +1,4 @@
-import { Order } from "../domain/user";
+import { Order } from "../domain/order";
 import {
     ProductControllerDto,
     ProductPresenterDto,
@@ -14,7 +14,7 @@ export class OrderControllerDto {
         this.qty = qty;
     }
 
-    toDomain = () => new Order(this.product.toDomain(), this.qty, this.id);
+    toDomain = () => new Order(this.id, this.product.toDomain(), this.qty);
 }
 
 export class OrderPresenterDto {
@@ -28,7 +28,7 @@ export class OrderPresenterDto {
         this.qty = qty;
     }
 
-    toDomain = () => new Order(this.product.toDomain(), this.qty, this.id);
+    toDomain = () => new Order(this.id, this.product.toDomain(), this.qty);
 
     toOrderControllerDto = () => new OrderControllerDto(this.product.toProductControllerDto(),this.qty, this.id);
 }

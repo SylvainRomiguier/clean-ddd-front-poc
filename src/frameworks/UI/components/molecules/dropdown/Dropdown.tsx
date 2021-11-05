@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button } from "../button/Button";
+import { Button } from "../../atoms/button/Button";
 import "./Dropdown.css";
 
 export const Dropdown:React.FC<{label:string}> = ({children, label}) => {

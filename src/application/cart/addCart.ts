@@ -4,7 +4,7 @@ import { IsErrorUserResult, IUserRepository } from "../../adapters/IUserReposito
 import { OrderControllerDto } from "../../adapters/OrderDto";
 import { ProductControllerDto } from "../../adapters/ProductDto";
 import { UserControllerDto, UserPresenterDto } from "../../adapters/UserDto";
-import { Cart } from "../../domain/user";
+import { Cart } from "../../domain/cart";
 
 export const makeAddCart = (uniqueIdGenerator: IUniqueIdGenerator, repository:IUserRepository, getUserById: (id:string) => Promise<UserPresenterDto>) => async (userId:string) => {
     const user = (await getUserById(userId)).toDomain();

@@ -11,10 +11,10 @@ import { makeUpdateProduct } from "../application/product/updateProduct";
 import { makeProductService } from "./product/productService";
 import { makeUserService } from "./user/userService";
 import { makeServices } from "./services";
-import { makeAddCart } from "../application/user/addCart";
+import { makeAddCart } from "../application/cart/addCart";
 import { makeRemoveAllUsers } from "../application/user/removeAllUsers";
 import { makeRemoveAllProducts } from "../application/product/removeAllProducts";
-import { makeAddOrderToCart } from "../application/user/addOrderToCart";
+import { makeAddOrder } from "../application/order/addOrder";
 import { makeGetProductById } from "../application/product/getProductById";
 
 const inMemoryUserRepository = makeInMemoryUserRepository(uniqueIdGenerator);
@@ -35,7 +35,7 @@ const inMemoryProductRepository =
  const getAllProducts = makeGetAllProducts(inMemoryProductRepository);
  const removeAllProducts = makeRemoveAllProducts(inMemoryProductRepository);
 
- const addOrderToCart = makeAddOrderToCart(uniqueIdGenerator, inMemoryUserRepository, inMemoryProductRepository, getProductById, getUserById);
+ const addOrderToCart = makeAddOrder(uniqueIdGenerator, inMemoryUserRepository, inMemoryProductRepository, getProductById, getUserById);
 
  const userService = makeUserService({addUser, updateUser, getUserById, getAllUsers, removeAllUsers, addCart, addOrderToCart});
  const productService = makeProductService({addProduct, updateProduct, getAllProducts, removeAllProducts});

@@ -6,8 +6,8 @@ import { Button } from "../../../components/atoms/button/Button";
 import { DateFormat } from "../../../components/atoms/dateFormat/DateFormat";
 import { Title } from "../../../components/atoms/title/Title";
 import { NumberField } from "../../../components/molecules/numberField/NumberField";
+import { ProductsDropdown } from "../../../product/molecules/productsDropdown/ProductsDropdown";
 import { Order } from "../../molecules/order/Order";
-import { ProductsDropdown } from "../../molecules/productsDropdown/ProductsDropdown";
 import { OrdersList } from "../ordersList/OrdersList";
 
 interface CartDetailsProps {

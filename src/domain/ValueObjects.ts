@@ -1,7 +1,7 @@
 export interface ValueObject {
     value: any;
-    validate(_value: any): boolean;
-    isEqualTo(_value: any): boolean;
+    validate(value: any): boolean;
+    isEqualTo(objectToCheck: ValueObject): boolean;
 }
 
 export class UserName implements ValueObject {
@@ -15,8 +15,8 @@ export class UserName implements ValueObject {
             throw new Error("Username should have at least 5 characters");
         return true;
     }
-    isEqualTo(value?: string): boolean {
-        return value === this.value;
+    isEqualTo(valueToCheck: UserName): boolean {
+        return valueToCheck.value === this.value;
     }
 }
 
@@ -32,8 +32,8 @@ export class Password implements ValueObject {
             );
         return true;
     }
-    isEqualTo(value: string = ""): boolean {
-        return value === this.value;
+    isEqualTo(valueToCheck:Password): boolean {
+        return valueToCheck.value === this.value;
     }
 }
 
@@ -45,8 +45,8 @@ export class UniqueId implements ValueObject {
     validate(value: string = ""): boolean {
         return true;
     }
-    isEqualTo(value: string = ""): boolean {
-        return value === this.value;
+    isEqualTo(valueToCheck:UniqueId): boolean {
+        return valueToCheck.value === this.value;
     }
 }
 
@@ -58,8 +58,8 @@ export class FirstName implements ValueObject {
     validate(value: string): boolean {
         return true;
     }
-    isEqualTo(_value?: string): boolean {
-        return _value === this.value;
+    isEqualTo(valueToCheck:FirstName): boolean {
+        return valueToCheck.value === this.value;
     }
 }
 
@@ -71,8 +71,8 @@ export class LastName implements ValueObject {
     validate(value: string = ""): boolean {
         return true;
     }
-    isEqualTo(value: string = ""): boolean {
-        return value === this.value;
+    isEqualTo(valueToCheck:LastName): boolean {
+        return valueToCheck.value === this.value;
     }
 }
 
@@ -82,14 +82,14 @@ export class ProductName implements ValueObject {
         if (this.validate(value)) this.value = value;
     }
     validate(value: string = ""): boolean {
-        if (!value.match(/^(?=.*[a-zA-Z])[0-9a-zA-Z]{4,}$/))
+        if (!value.match(/^(?=.*[a-zA-Z])[0-9a-zA-Z ]{4,}$/))
             throw new Error(
                 "Product name should have  at least 4 characters with one letter"
             );
         return true;
     }
-    isEqualTo(value: string = ""): boolean {
-        return value === this.value;
+    isEqualTo(valueToCheck:ProductName): boolean {
+        return valueToCheck.value === this.value;
     }
 }
 
@@ -102,7 +102,7 @@ export class Quantity implements ValueObject {
         if (value < 0) throw new Error("Quantity can not be less than zero.");
         return true;
     }
-    isEqualTo(value: number = 0): boolean {
-        return value === this.value;
+    isEqualTo(valueToCheck:Quantity): boolean {
+        return valueToCheck.value === this.value;
     }
 }

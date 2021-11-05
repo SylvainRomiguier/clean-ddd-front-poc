@@ -11,6 +11,10 @@ export class Product {
         this.qtyInStock = new Quantity(qtyInStock);
     }
 
+    isEqualTo(objectToCheck: Product): boolean {
+        return objectToCheck.id?.value === this.id?.value;
+    }
+
     addQty = (qty: number) =>
         (this.qtyInStock = new Quantity((this.qtyInStock.value || 0) + qty));
 

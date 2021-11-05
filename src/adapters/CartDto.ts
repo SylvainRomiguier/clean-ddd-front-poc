@@ -1,4 +1,4 @@
-import { Cart } from "../domain/user";
+import { Cart } from "../domain/cart";
 import { OrderControllerDto, OrderPresenterDto } from "./OrderDto";
 
 export class CartControllerDto {

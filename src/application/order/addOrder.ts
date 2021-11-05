@@ -14,9 +14,9 @@ import {
     ProductPresenterDto,
 } from "../../adapters/ProductDto";
 import { UserControllerDto, UserPresenterDto } from "../../adapters/UserDto";
-import { Order } from "../../domain/user";
+import { Order } from "../../domain/order";
 
-export const makeAddOrderToCart =
+export const makeAddOrder =
     (
         uniqueIdGenerator: IUniqueIdGenerator,
         userRepository: IUserRepository,
@@ -31,9 +31,8 @@ export const makeAddOrderToCart =
         quantity: number
     ) => {
         const user = (await getUserById(userId)).toDomain();
-
+        const cart = user.carts.find((c)=> c.id.value === cartId);
         const product = (await getProductById(productId)).toDomain();
-        // remove quantity from stock
         product.removeQty(quantity);
         let productResponse = await productRepository.updateProduct(
             new ProductControllerDto(
@@ -47,21 +46,20 @@ export const makeAddOrderToCart =
 
         // create order, find the right cart and add new order to it
         // then update user
-        const cart = user.carts.find((cart) => cart.id?.isEqualTo(cartId));
         if (!cart!)
             throw new Error(`This cart does not exist : id = ${cartId}`);
-        const existingProductOrder = cart.orders?.find(
-            (order) => order.product.id?.isEqualTo(product.id?.value)
+        const existingProductOrder = cart.orders?.find((order) =>
+            order.product.isEqualTo(product)
         );
         if (existingProductOrder) {
             const updatedOrder = new Order(
+                existingProductOrder.id?.value,
                 product,
-                quantity + existingProductOrder.qty.value,
-                existingProductOrder.id?.value
+                quantity + existingProductOrder.qty.value
             );
             cart.updateOrder(updatedOrder);
         } else {
-            const newOrder = new Order(product, quantity, uniqueIdGenerator());
+            const newOrder = new Order(uniqueIdGenerator(), product, quantity);
             cart.addOrder(newOrder);
         }
         user.updateCart(cart);

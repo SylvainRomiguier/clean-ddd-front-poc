@@ -5,14 +5,15 @@ This project demonstrates the DDD and Clean Architecture concepts
 ## Clean Architecture, Domain Driven Design, Atomic Design
 
 ### Domain
-In the domain directory you will find the domain entities :
-- Product : a Product entity
-- User : the User entity contains carts, carts contains orders, orders are linked to a Product entity.
+In the domain directory you will find the domain entities (objects with a unique identity ) :
+- Product : a Product entity.
+- User : a User entity contains carts.
+- Cart : a Cart contains orders.
+- Order : an Order is linked to a Product.
 
-There is no domain entity for carts and orders as they can not exist without a User (DDD).
 Domain entities do not depend on anything (DDD and Clean Architecture).
 
-Business logic : entities are composed by value objects, contain methods, representing business logic with validation and mutation.
+Business logic : entities are composed by value objects (objects without a unique identity such as Quantity, Product Name, etc.), contain methods, representing business logic with validation and mutation.
 
 ### Application
 In the application (DDD denomitation of UseCases in Clean Architecture) you will find the use cases for mutating the domain entities.

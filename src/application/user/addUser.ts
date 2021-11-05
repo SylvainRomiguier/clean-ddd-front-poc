@@ -21,7 +21,7 @@ export const makeAddUser =
                 user.carts.map(
                     (cart) =>
                         new CartControllerDto(
-                            cart.id?.value,
+                            cart.id.value,
                             cart.creationDate,
                             cart.orders.map(
                                 (order) =>
