@@ -3,6 +3,7 @@
     flex: 1;
     flex-direction: row;
     flex-wrap: wrap;
+    padding: 10px;
 }
 
 .list > * {

@@ -16,7 +16,8 @@ export const Card: React.FC<CardProps> = ({
 
     const selectedStyle = {backgroundColor: color,
     color: "white",
-    fontWeight: "bolder"
+    fontWeight: "bolder",
+    boxShadow: "none",
 } as CSSProperties;
 
 const notSelectedStyle = {

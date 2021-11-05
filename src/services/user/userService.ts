@@ -25,13 +25,13 @@ export type UserEvent = "CREATE_USER" | "UPDATE_USER" | "REMOVE_USER";
 const userObserver = createObserver<UserEvent>();
 
 export const makeUserService = (userUseCases: UserUseCases): UserService => ({
-    addUser: (user: UserControllerDto) => {
-        const response = userUseCases.addUser(user);
+    addUser: async (user: UserControllerDto) => {
+        const response = await userUseCases.addUser(user);
         userObserver.publish("CREATE_USER");
         return response;
     },
-    updateUser: (user: UserControllerDto) => {
-        const response = userUseCases.updateUser(user);
+    updateUser: async (user: UserControllerDto) => {
+        const response = await userUseCases.updateUser(user);
         userObserver.publish("UPDATE_USER");
         return response;
     },

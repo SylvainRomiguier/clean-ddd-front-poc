@@ -25,13 +25,13 @@ export const productObserver = createObserver<ProductEvent>();
 export const makeProductService = (
     productUseCases: ProductUseCases
 ): ProductService => ({
-    addProduct: (product: ProductControllerDto) => {
-        const response = productUseCases.addProduct(product);
+    addProduct: async (product: ProductControllerDto) => {
+        const response = await productUseCases.addProduct(product);
         productObserver.publish("CREATE_PRODUCT");
         return response;
     },
-    updateProduct: (product: ProductControllerDto) => {
-        const response = productUseCases.updateProduct(product);
+    updateProduct: async (product: ProductControllerDto) => {
+        const response = await productUseCases.updateProduct(product);
         productObserver.publish("UPDATE_PRODUCT");
         return response;
     },

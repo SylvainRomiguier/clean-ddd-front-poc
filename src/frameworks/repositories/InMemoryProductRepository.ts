@@ -31,6 +31,7 @@ export const makeInMemoryProductRepository = (
 ): IProductRepository => ({
     createProduct: (product: ProductControllerDto) => {
         const id = uniqueIdGenerator();
+        product.id = id;
         products[id] = product;
         const _product = new ProductPresenterDto(
             product.name,

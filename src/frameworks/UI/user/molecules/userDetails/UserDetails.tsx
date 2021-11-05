@@ -2,6 +2,7 @@ import { CartPresenterDto } from "../../../../../adapters/CartDto";
 import { UserPresenterDto } from "../../../../../adapters/UserDto";
 import { Button } from "../../../components/atoms/button/Button";
 import { CartListOfCards } from "../../organisms/cartListOfCards/CartListOfCards";
+import "./UserDetails.css";
 
 export interface UserDetailsProps {
     user: UserPresenterDto;
@@ -16,16 +17,38 @@ export const UserDetails: React.FC<UserDetailsProps> = ({
     selectedCart,
     onSelectCartId,
 }) => (
-    <div>
-        <div>Id : {user.id}</div>
-        <div>User name : {user.userName}</div>
-        <div>
-            {user.firstName} {user.lastName}
-        </div>
-        <div>
-            Carts count : {user.carts?.length || 0}
-        </div>
-        <div>Orders count : {user.carts?.reduce((acc, cart) => acc+(cart?.orders?.length || 0), 0)}</div>
+    <div className="user-details-container">
+        <table className="user-details">
+            <tbody>
+                <tr>
+                    <td className="user-details-label">Id</td>
+                    <td> {user.id}</td>
+                </tr>
+                <tr>
+                    <td className="user-details-label">User name</td>
+                    <td> {user.userName}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        {user.firstName} {user.lastName}
+                    </td>
+                </tr>
+                <tr>
+                    <td className="user-details-label">Carts count</td>
+                    <td> {user.carts?.length || 0}</td>
+                </tr>
+                <tr>
+                    <td className="user-details-label">Orders count</td>
+                    <td>
+                        {user.carts?.reduce(
+                            (acc, cart) => acc + (cart?.orders?.length || 0),
+                            0
+                        )}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
         <Button onClick={() => onAddCart(user.id)}>Add cart</Button>
         <div style={{ marginTop: "10px" }}></div>
         <CartListOfCards

@@ -56,7 +56,7 @@ function Main() {
         const unsubscribeUsersChange =
             services.userService.subscribe(updateUsersList);
         const unsubscribeProductsChange =
-            services.userService.subscribe(updateProductsList);
+            services.productService.subscribe(updateProductsList);
         services.userService.removeAllUsers();
         services.userService.addUser(
             new UserControllerDto(
@@ -153,7 +153,7 @@ function Main() {
             if (e instanceof Error) {
                 setErrors((prevErrors) => ({
                     ...prevErrors,
-                    onAddOrder: (e as Error).message,
+                    onAddOrder: `${order.product.name} stock : ${(e as Error).message}`,
                 }));
             }
             console.log(e);
