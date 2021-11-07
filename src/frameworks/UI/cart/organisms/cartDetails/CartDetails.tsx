@@ -10,6 +10,7 @@ import { NumberField } from "../../../components/molecules/numberField/NumberFie
 import { ProductsDropdown } from "../../../product/molecules/productsDropdown/ProductsDropdown";
 import { Order } from "../../../order/molecules/order/Order";
 import { OrdersList } from "../../../order/organisms/ordersList/OrdersList";
+import { RoundImage } from "../../../components/atoms/image/RoundImage";
 
 interface CartDetailsProps {
     cart: CartPresenterDto;
@@ -62,6 +63,7 @@ export const CartDetails: React.FC<CartDetailsProps> = ({
                         alignItems: "center",
                     }}
                 >
+                    <RoundImage urlString={selectedProductToOrder.picture ||  "/assets/new-product.jpg"} />
                     <Label size={24} color="teal">
                         {selectedProductToOrder.name}
                     </Label>

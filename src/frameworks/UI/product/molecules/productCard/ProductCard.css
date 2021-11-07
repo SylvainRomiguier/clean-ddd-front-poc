@@ -10,9 +10,3 @@
 .quantity-in-stock-ko {
     color: red;
 }
-
-.product-picture {
-    height: 50px;
-    width: 50px;
-    border-radius: 25px;
-}

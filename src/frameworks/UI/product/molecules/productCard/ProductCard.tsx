@@ -1,5 +1,6 @@
 import { ProductPresenterDto } from "../../../../../adapters/ProductDto";
 import { Card } from "../../../components/atoms/card/Card";
+import { RoundImage } from "../../../components/atoms/image/RoundImage";
 import { Label } from "../../../components/atoms/label/Label";
 import { Title } from "../../../components/atoms/title/Title";
 import "./ProductCard.css";
@@ -18,11 +19,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     <Card onClick={onClick} selected={selected} color="teal">
         <div style={{ display: "flex", alignItems: "center" }}>
             <div style={{marginRight: "10px"}}>
-                <img
-                    src={product.picture || "/assets/new-product.jpg"}
-                    className="product-picture"
-                    alt="product"
-                />
+               <RoundImage urlString={product.picture || "/assets/new-product.jpg"} />
             </div>
             <div>
                 <Title>Product</Title>
