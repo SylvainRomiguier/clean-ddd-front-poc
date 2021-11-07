@@ -57,47 +57,32 @@ export const makeAddOrder =
         }
         user.updateCart(cart);
 
-        try {
-            const updatedUser = await updateUser(
-                new UserControllerDto(
-                    user.id?.value,
-                    user.userName.value,
-                    user.password?.value,
-                    user.firstName?.value,
-                    user.lastName?.value,
-                    user.carts.map(
-                        (cart) =>
-                            new CartControllerDto(
-                                cart.id?.value,
-                                cart.creationDate,
-                                cart.orders.map(
-                                    (order) =>
-                                        new OrderControllerDto(
-                                            new ProductControllerDto(
-                                                order.product.name.value,
-                                                order.product.qtyInStock.value,
-                                                order.product.id?.value
-                                            ),
-                                            order.qty.value,
-                                            order.id?.value
-                                        )
-                                )
+        return updateUser(
+            new UserControllerDto(
+                user.id?.value,
+                user.userName.value,
+                user.password?.value,
+                user.firstName?.value,
+                user.lastName?.value,
+                user.carts.map(
+                    (cart) =>
+                        new CartControllerDto(
+                            cart.id?.value,
+                            cart.creationDate,
+                            cart.orders.map(
+                                (order) =>
+                                    new OrderControllerDto(
+                                        new ProductControllerDto(
+                                            order.product.name.value,
+                                            order.product.qtyInStock.value,
+                                            order.product.id?.value
+                                        ),
+                                        order.qty.value,
+                                        order.id?.value
+                                    )
                             )
-                    )
+                        )
                 )
-            );
-            return updatedUser;
-        } catch (e) {
-            // reapply quantity to stock if order can not be saved
-            product.addQty(quantity);
-            await updateProduct(
-                new ProductControllerDto(
-                    product.name.value,
-                    product.qtyInStock.value,
-                    product.id?.value,
-                    product.picture?.value
-                )
-            );
-            throw e;
-        }
+            )
+        );
     };
