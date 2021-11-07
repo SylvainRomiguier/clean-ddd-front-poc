@@ -60,13 +60,13 @@ function Main() {
         );
         services.productService.removeAllProducts();
         services.productService.addProduct(
-            new ProductControllerDto("Apple", 10)
+            new ProductControllerDto("Apple", 10, undefined, "/assets/apple.jpg")
         );
         services.productService.addProduct(
-            new ProductControllerDto("Pear", 15)
+            new ProductControllerDto("Pear", 15, undefined, "/assets/pear.jpg")
         );
         services.productService.addProduct(
-            new ProductControllerDto("Cherry", 10)
+            new ProductControllerDto("Cherry", 10, undefined, "/assets/cherry.jpg")
         );
         return function () {
             unsubscribeUsersChange();

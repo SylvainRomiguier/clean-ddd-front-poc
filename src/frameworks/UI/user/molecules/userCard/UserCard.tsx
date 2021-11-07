@@ -1,5 +1,6 @@
 import { UserPresenterDto } from "../../../../../adapters/UserDto";
 import { Card } from "../../../components/atoms/card/Card";
+import { Label } from "../../../components/atoms/label/Label";
 import { Title } from "../../../components/atoms/title/Title";
 
 export interface UserCardProps {
@@ -16,9 +17,8 @@ export const UserCard: React.FC<UserCardProps> = ({
     <Card onClick={onClick} selected={selected}>
         <Title>User</Title>
         <div>{user.id}</div>
-        <div>{user.userName}</div>
-        <div>{user.firstName && user.firstName}</div>
-        <div>{user.lastName && user.lastName}</div>
-        <div>Carts count : {user.carts?.length || 0}</div>
+        <Label color="teal" size={16}>{user.userName}</Label>
+        <div>{user.firstName && user.firstName} {user.lastName && user.lastName}</div>
+        <div style={{marginTop: "10px"}}>Carts count : {user.carts?.length || 0}</div>
     </Card>
 );

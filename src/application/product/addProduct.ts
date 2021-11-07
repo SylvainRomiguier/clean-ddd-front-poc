@@ -1,4 +1,7 @@
-import { IProductRepository, IsErrorProductResult } from "../../adapters/IProductRepository";
+import {
+    IProductRepository,
+    IsErrorProductResult,
+} from "../../adapters/IProductRepository";
 import { ProductControllerDto } from "../../adapters/ProductDto";
 
 export const makeAddProduct =
@@ -6,10 +9,15 @@ export const makeAddProduct =
     async (productController: ProductControllerDto) => {
         const product = productController.toDomain();
         const response = await repository.createProduct(
-            new ProductControllerDto(product.name.value, product.qtyInStock.value)
+            new ProductControllerDto(
+                product.name.value,
+                product.qtyInStock.value,
+                undefined,
+                product.picture.value
+            )
         );
         if (!IsErrorProductResult(response)) {
             return response.result;
-         }
-         throw new Error(response.reason);
+        }
+        throw new Error(response.reason);
     };

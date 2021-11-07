@@ -2,8 +2,8 @@ import { CartPresenterDto } from "../../../../adapters/CartDto";
 import { OrderControllerDto } from "../../../../adapters/OrderDto";
 import { ProductPresenterDto } from "../../../../adapters/ProductDto";
 import { UserPresenterDto } from "../../../../adapters/UserDto";
+import { CartDetails } from "../../cart/organisms/cartDetails/CartDetails";
 import { UserDetails } from "../molecules/userDetails/UserDetails";
-import { CartDetails } from "../organisms/cartDetails/CartDetails";
 import { UserFormOutput, UserForm } from "../organisms/userForm/UserForm";
 import { UserListOfCards } from "../organisms/userListOfCards/UserListOfCards";
 

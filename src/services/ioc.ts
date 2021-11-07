@@ -35,7 +35,7 @@ const inMemoryProductRepository =
  const getAllProducts = makeGetAllProducts(inMemoryProductRepository);
  const removeAllProducts = makeRemoveAllProducts(inMemoryProductRepository);
 
- const addOrderToCart = makeAddOrder(uniqueIdGenerator, inMemoryUserRepository, inMemoryProductRepository, getProductById, getUserById);
+ const addOrderToCart = makeAddOrder(uniqueIdGenerator, getProductById, getUserById, updateProduct, updateUser);
 
  const userService = makeUserService({addUser, updateUser, getUserById, getAllUsers, removeAllUsers, addCart, addOrderToCart});
  const productService = makeProductService({addProduct, updateProduct, getAllProducts, removeAllProducts});

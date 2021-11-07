@@ -1,7 +1,7 @@
 import { CartPresenterDto } from "../../../../../adapters/CartDto";
 import { UserPresenterDto } from "../../../../../adapters/UserDto";
+import { CartListOfCards } from "../../../cart/organisms/cartListOfCards/CartListOfCards";
 import { Button } from "../../../components/atoms/button/Button";
-import { CartListOfCards } from "../../organisms/cartListOfCards/CartListOfCards";
 import "./UserDetails.css";
 
 export interface UserDetailsProps {

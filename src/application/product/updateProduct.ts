@@ -13,9 +13,11 @@ export const makeUpdateProduct =
             new ProductControllerDto(
                 product.name.value,
                 product.qtyInStock.value,
-                product.id?.value
+                product.id?.value,
+                product.picture?.value
             )
         );
+        console.log(response);
         if (!IsErrorProductResult(response)) {
             return response.result;
         }

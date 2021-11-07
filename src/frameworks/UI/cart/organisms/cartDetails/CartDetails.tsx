@@ -8,8 +8,8 @@ import { DateFormat } from "../../../components/atoms/dateFormat/DateFormat";
 import { Label } from "../../../components/atoms/label/Label";
 import { NumberField } from "../../../components/molecules/numberField/NumberField";
 import { ProductsDropdown } from "../../../product/molecules/productsDropdown/ProductsDropdown";
-import { Order } from "../../molecules/order/Order";
-import { OrdersList } from "../ordersList/OrdersList";
+import { Order } from "../../../order/molecules/order/Order";
+import { OrdersList } from "../../../order/organisms/ordersList/OrdersList";
 
 interface CartDetailsProps {
     cart: CartPresenterDto;
@@ -31,28 +31,40 @@ export const CartDetails: React.FC<CartDetailsProps> = ({
     >(undefined);
     useEffect(() => {
         if (selectedProductToOrder)
-            setLocalOrder(new OrderControllerDto(selectedProductToOrder, 0));
+            setLocalOrder(new OrderControllerDto(selectedProductToOrder.toProductControllerDto(), 0));
     }, [selectedProductToOrder]);
     return (
         <div className="cart-details">
-            <Label color="indigo" size={16}>Cart : {cart.id}</Label>
-            <Label color="indigo" size={16}><DateFormat date={cart.creationDate} /></Label>
-            <div style={{padding: "10px"}}>
-            <ProductsDropdown>
-                {productsList.map((product) => (
-                    <div
-                        key={product.id}
-                        onClick={() => onSelectProductToOrderId(product.id)}
-                        style={{ cursor: "pointer" }}
-                    >
-                        {product.name}
-                    </div>
-                ))}
-            </ProductsDropdown>
+            <Label color="indigo" size={16}>
+                Cart : {cart.id}
+            </Label>
+            <Label color="indigo" size={16}>
+                <DateFormat date={cart.creationDate} />
+            </Label>
+            <div style={{ padding: "10px" }}>
+                <ProductsDropdown>
+                    {productsList.map((product) => (
+                        <div
+                            key={product.id}
+                            onClick={() => onSelectProductToOrderId(product.id)}
+                            style={{ cursor: "pointer" }}
+                        >
+                            {product.name}
+                        </div>
+                    ))}
+                </ProductsDropdown>
             </div>
             {selectedProductToOrder! && (
-                <div style={{ display: "flex", justifyContent: "space-evenly" ,alignItems: "center" }}>
-                    <Label size={24} color="teal">{selectedProductToOrder.name}</Label>
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "space-evenly",
+                        alignItems: "center",
+                    }}
+                >
+                    <Label size={24} color="teal">
+                        {selectedProductToOrder.name}
+                    </Label>
                     <div>
                         <NumberField
                             label="Quantity to order"
@@ -60,7 +72,7 @@ export const CartDetails: React.FC<CartDetailsProps> = ({
                             onChange={(value) => {
                                 setLocalOrder(
                                     new OrderControllerDto(
-                                        selectedProductToOrder,
+                                        selectedProductToOrder.toProductControllerDto(),
                                         value
                                     )
                                 );

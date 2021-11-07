@@ -1,14 +1,16 @@
-import { UniqueId, ProductName, Quantity } from "./ValueObjects";
+import { UniqueId, ProductName, Quantity, URLString } from "./ValueObjects";
 
 export class Product {
     id?: UniqueId;
     name: ProductName;
     qtyInStock: Quantity;
+    picture: URLString;
 
-    constructor(name: string, qtyInStock: number, id?: string) {
+    constructor(name: string, qtyInStock: number, id?: string, picture?: string) {
         this.id = new UniqueId(id);
         this.name = new ProductName(name);
         this.qtyInStock = new Quantity(qtyInStock);
+        this.picture = new URLString(picture);
     }
 
     isEqualTo(objectToCheck: Product): boolean {

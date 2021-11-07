@@ -2,7 +2,7 @@ import { CartPresenterDto } from "../../../../../adapters/CartDto";
 import { Card } from "../../../components/atoms/card/Card";
 import { DateFormat } from "../../../components/atoms/dateFormat/DateFormat";
 import { Title } from "../../../components/atoms/title/Title";
-import { Order } from "../order/Order";
+import { Order } from "../../../order/molecules/order/Order";
 
 export interface CartCardProps {
     onClick: () => void;

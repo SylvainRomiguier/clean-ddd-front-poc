@@ -106,3 +106,16 @@ export class Quantity implements ValueObject {
         return valueToCheck.value === this.value;
     }
 }
+
+export class URLString implements ValueObject {
+    value: string = "";
+    constructor(value: string = "") {
+        if (this.validate(value)) this.value = value;
+    }
+    validate(value: string = ""): boolean {
+        return true;
+    }
+    isEqualTo(valueToCheck:LastName): boolean {
+        return valueToCheck.value === this.value;
+    }
+}
